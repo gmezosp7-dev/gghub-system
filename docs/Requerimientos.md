@@ -1,4 +1,9 @@
-  ID	                Descripción	                                    Actor	            Prioridad	                      Criterio de aceptación
+sassdasdasd
+
+
+
+
+ID	                Descripción	                                    Actor	            Prioridad	                      Criterio de aceptación
   
 RF-01	  El sistema debe permitir al administrador registrar       Administrador           Alta      	No se permite registrar dos clientes con el mismo documento.
         clientes con nombre, documento, teléfono y correo.
@@ -22,4 +27,4 @@ RF-06	  El sistema debe calcular automáticamente el valor del        Sistema   
         
 RF-07	  El sistema debe permitir al empleado consultar los          Empleado              Media       La consulta debe diferenciar entre alquileres activos y finalizados.
         alquileres activos y los alquileres realizados   
-        por un cliente.			
+        por un cliente.
