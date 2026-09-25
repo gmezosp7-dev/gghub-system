@@ -30,30 +30,41 @@ Automatizar este proceso transformará el negocio en tres aspectos importantes:
 
 
 
-
+PARTE 2 Requerimientos
 
 ID	                Descripción	                                    Actor	            Prioridad	                      Criterio de aceptación
-  
-RF-01	  El sistema debe permitir al administrador registrar       Administrador           Alta      	No se permite registrar dos clientes con el mismo documento.
-        clientes con nombre, documento, teléfono y correo.
-      
-RF-02	  El sistema debe permitir al administrador registrar       Administrador           Alta        Cada consola debe tener un identificador único y un estado inicial.
-        las consolas disponibles indicando tipo, modelo, estado
-        y precio de alquiler por hora.			
-        
-RF-03	  El sistema debe permitir al administrador consultar las    Administrador          Alta        La consulta solo muestra las consolas que se encuentran disponibles 
-        consolas disponibles para alquiler.			                                                      para un nuevo alquiler.
-        
-RF-04	  El sistema debe permitir al empleado registrar el alquiler  Empleado              Alta        El sistema debe impedir el alquiler de una consola que ya esté ocupada.
-        de una consola a un cliente, indicando la consola, fecha, 
-        hora de inicio y duración.			
-        
-RF-05	  El sistema debe permitir al empleado registrar la           Empleado              Alta        Al registrar la devolución, la consola cambia a estado disponible 
-        devolución de una consola.			                                                              y se calcula el valor total del alquiler.
-        
-RF-06	  El sistema debe calcular automáticamente el valor del        Sistema              Alta        El valor calculado corresponde a la tarifa de la consola multiplicada 
-        alquiler según la consola y el tiempo utilizado.			                                        por el tiempo de alquiler.
-        
-RF-07	  El sistema debe permitir al empleado consultar los          Empleado              Media       La consulta debe diferenciar entre alquileres activos y finalizados.
-        alquileres activos y los alquileres realizados   
-        por un cliente.
+
+RF-01    El sistema debe permitir al operador registrar y          Operador             Alta        El sistema valida que el campo de documento contenga 
+         consultar clientes indicando nombre, documento de                                          únicamente números y rechaza el registro si encuentra un
+         identidad, teléfono y correo electrónico.                                                  documento registrado previamente.
+
+RF-02    El sistema debe permitir al administrador registrar       Administrador        Alta        El sistema rechaza el registro si el identificador ya existe
+         las estaciones de juego diferenciando si es PC o                                           y valida que la tarifa base por hora sea un número
+         consola con: identificador numérico, modelo y tarifa                                       estrictamente mayor a cero.
+         base por hora. 
+         
+RF-03    El sistema debe permitir al operador consultar la         Operador             Alta        El sistema muestra una lista con las 25 estaciones
+         disponibilidad y el estado en tiempo real de todas                                         especificando su tipo e indica su estado actual (Disponible, 
+         las estaciones de juego, las 15 de PC y las 10 de                                          En uso, o En mantenimiento) 
+         consola.
+         
+RF-04    El sistema debe permitir al operador registrar el         Operador             Alta        El sistema bloquea el inicio de sesión del juego si la estación
+         inicio de sesión de un juego a un cliente en específico                                    se encuentra en estado "En uso" o "En mantenimiento".
+         en una estación determinada, especificando controles, 
+         periféricos adicionales entregados. 
+
+RF-05    El sistema debe permitir al operador finalizar la         Operador             Alta        El sistema calcula el cobro total sumando: 
+         sesión de juego de una estación, calcular el costo                                         (tiempo transcurrido * tarifa base) + (tarifa de controles
+         total de la cuenta y liberar el equipo.                                                    extra * cantidad) + consumos de alimentos; al procesar el pago
+                                                                                                    libera la estación cambiando su estado a "Disponible"
+
+RF-06    El sistema debe permitir al administrador registrar       Administrador        Alta        El sistema rechaza el registro si el código del producto 
+         y actualizar los productos consumibles disponibles                                         está duplicado y no permite ingresar valores negativos en el  
+         indicando código único, nombre, categoría, precio de venta                                 precio de venta ni en la cantidad de stock.
+         costo y stock disponible. 
+
+RF-07    El sistema debe permitir al operador registrar la venta   Operador             Alta        El sistema impide la venta si la cantidad requerida supera la 
+         de productos de la barra, cargándolos a la cuenta de                                       cantidad en stock disponible en el inventario y descuenta 
+         cobro de la sesión activa del cliente o procesándolos                                      automáticamente las unidades vendidas en tiempo real tras la 
+         como venta directa de contado.                                                             confirmación de la venta.
+         
