@@ -30,71 +30,23 @@ Automatizar este proceso transformará el negocio en tres aspectos importantes:
 
 
 
-PARTE 2 Requerimientos
+### PARTE 2 Requerimientos
 
-ID	                Descripción	                        Actor	     Prioridad	                   Criterio de aceptación
-
-RF-01    El sistema debe permitir al operador registrar y          Operador             Alta        El sistema valida que el campo de documento contenga 
-         consultar clientes indicando nombre, documento de                                          únicamente números y rechaza el registro si encuentra un
-         identidad, teléfono y correo electrónico.                                                  documento registrado previamente.
-
-RF-02    El sistema debe permitir al administrador registrar       Administrador        Alta        El sistema rechaza el registro si el identificador ya existe
-         las estaciones de juego diferenciando si es PC o                                           y valida que la tarifa base por hora sea un número
-         consola con: identificador numérico, modelo y tarifa                                       estrictamente mayor a cero.
-         base por hora. 
-         
-RF-03    El sistema debe permitir al operador consultar la         Operador             Media        El sistema muestra una lista con las 25 estaciones
-         disponibilidad y el estado en tiempo real de todas                                         especificando su tipo e indica su estado actual (Disponible, 
-         las estaciones de juego, las 15 de PC y las 10 de                                          En uso, o En mantenimiento) 
-         consola.
-         
-RF-04    El sistema debe permitir al operador registrar el         Operador             Alta        El sistema bloquea el inicio de sesión del juego si la estación
-         inicio de sesión de un juego a un cliente en específico                                    se encuentra en estado "En uso" o "En mantenimiento".
-         en una estación determinada, especificando controles, 
-         periféricos adicionales entregados. 
-
-RF-05    El sistema debe permitir al operador finalizar la         Operador             Alta        El sistema calcula el cobro total sumando: 
-         sesión de juego de una estación, calcular el costo                                         (tiempo transcurrido * tarifa base) + (tarifa de controles
-         total de la cuenta y liberar el equipo.                                                    extra * cantidad) + consumos de alimentos; al procesar el pago
-                                                                                                    libera la estación cambiando su estado a "Disponible"
-
-RF-06    El sistema debe permitir al administrador registrar       Administrador        Alta        El sistema rechaza el registro si el código del producto 
-         y actualizar los productos consumibles disponibles                                         está duplicado y no permite ingresar valores negativos en el  
-         indicando código único, nombre, categoría, precio de venta                                 precio de venta ni en la cantidad de stock.
-         costo y stock disponible. 
-
-RF-07    El sistema debe permitir al operador registrar la venta   Operador             Media       El sistema impide la venta si la cantidad requerida supera la 
-         de productos de la barra, cargándolos a la cuenta de                                       cantidad en stock disponible en el inventario y descuenta 
-         cobro de la sesión activa del cliente o procesándolos                                      automáticamente las unidades vendidas en tiempo real tras la 
-         como venta directa de contado.                                                             confirmación de la venta.
-
-RF-08    El sistema debe permitir al administrador configurar      Administrador        Alta        El sistema no permite programar un torneo con una fecha o hora 
-         torneos presenciales indicando nombre del evento,                                          anterior a la del sistema, ni registrar un aforo máximo inferior
-         videojuego,fecha, costo de inscripción,                                                    a 2 participantes
-         aforo máximo y modalidad (eliminación directa o
-         fase de grupos).
-
-RF-09    El sistema debe permitir al operador registrar la         Operador             Alta       El sistema bloquea la inscripción si el cliente ya está registrado en 
-         inscripción de un cliente a un torneo activo                                              ese mismo torneo o si la cantidad de participantes ya alcanzo el limite máximo 
-         registrando el cobro respectivo.                                                          
-
-RF-10    El sistema debe permitir al árbitro generar los           Arbitro              Media       El sistema genera los cruces emparejando únicamente a los clientes que se encuentran
-         emparejamientos y llaves de la competencia del torneo                                     inscritos  y aplicando las reglas de la modalidad seleccionada
-         una vez que se cerrada la etapa de inscripción.                                           (eliminación directa o grupos).
-
-RF-11    El sistema debe permitir al árbitro registrar los         Arbitro              Media       El sistema avanza automáticamente al ganador a la siguiente ronda de la llave y 
-         resultados y marcadores de cada partida en las                                            actualiza la tabla de posiciones si la competencia sigue en la instancia de fase de grupos.
-         llaves del torneo.
-         
-RF-12    El sistema debe permitir al operador realizar             Operador             Media      El sistema calcula y divide el dinero total recaudado apartado por tiempo de juego,
-         el cierre de caja de su turno, generando un informe                                       recargos de controles extras, ventas de barra e inscripciones a torneos.
-         consolidado de recaudos y de eventos en el dia.
-
-RNF-01   Todos los datos gestionados por la aplicación 
-         (clientes,estaciones de juego, catálogo de inventario,    Todos                Alta       Toda la información registrada se conserva componiendose tras cerrar y reiniciar la aplicación,  
-         consumos, sesiones activas/cerradas                                                       recuperando el estado de la sala, los saldos y el inventario sin perder los datos. 
-         y torneos con sus llaves) deben persistir                        
-         en almacenamiento permanente.
+| ID | Descripción | Actor | Prioridad | Criterio de aceptación |
+| :--- | :--- | :--- | :--- | :--- |
+| RF-01 | El sistema debe permitir al operador registrar y consultar clientes indicando nombre, documento de identidad, teléfono y correo electrónico. | Operador | Alta | El sistema valida que el campo de documento contenga únicamente números y rechaza el registro si encuentra un documento registrado previamente. |
+| RF-02 | El sistema debe permitir al administrador registrar las estaciones de juego diferenciando si es PC o consola con: identificador numérico, modelo y tarifa base por hora. | Administrador | Alta | El sistema rechaza el registro si el identificador ya existe y valida que la tarifa base por hora sea un número estrictamente mayor a cero. |
+| RF-03 | El sistema debe permitir al operador consultar la disponibilidad y el estado en tiempo real de todas las estaciones de juego, las 15 de PC y las 10 de consola. | Operador | Media | El sistema muestra una lista con las 25 estaciones especificando su tipo e indica su estado actual (Disponible, En uso, o En mantenimiento) |
+| RF-04 | El sistema debe permitir al operador registrar el inicio de sesión de un juego a un cliente en específico en una estación determinada, especificando controles, periféricos adicionales entregados. | Operador | Alta | El sistema bloquea el inicio de sesión del juego si la estación se encuentra en estado "En uso" o "En mantenimiento". |
+| RF-05 | El sistema debe permitir al operador finalizar la sesión de juego de una estación, calcular el costo total de la cuenta y liberar el equipo. | Operador | Alta | El sistema calcula el cobro total sumando: (tiempo transcurrido * tarifa base) + (tarifa de controles extra * cantidad) + consumos de alimentos; al procesar el pago libera la estación cambiando su estado a "Disponible" |
+| RF-06 | El sistema debe permitir al administrador registrar y actualizar los productos consumibles disponibles indicando código único, nombre, categoría, precio de venta costo y stock disponible. | Administrador | Alta | El sistema rechaza el registro si el código del producto está duplicado y no permite ingresar valores negativos en el precio de venta ni en la cantidad de stock. |
+| RF-07 | El sistema debe permitir al operador registrar la venta de productos de la barra, cargándolos a la cuenta de cobro de la sesión activa del cliente o procesándolos como venta directa de contado. | Operador | Media | El sistema impide la venta si la cantidad requerida supera la cantidad en stock disponible en el inventario y descuenta automáticamente las unidades vendidas en tiempo real tras la confirmación de la venta. |
+| RF-08 | El sistema debe permitir al administrador configurar torneos presenciales indicando nombre del evento, videojuego,fecha, costo de inscripción, aforo máximo y modalidad (eliminación directa o fase de grupos). | Administrador | Alta | El sistema no permite programar un torneo con una fecha o hora anterior a la del sistema, ni registrar un aforo máximo inferior a 2 participantes |
+| RF-09 | El sistema debe permitir al operador registrar la inscripción de un cliente a un torneo activo registrando el cobro respectivo. | Operador | Alta | El sistema bloquea la inscripción si el cliente ya está registrado en ese mismo torneo o si la cantidad de participantes ya alcanzo el limite máximo |
+| RF-10 | El sistema debe permitir al árbitro generar los emparejamientos y llaves de la competencia del torneo una vez que se cerrada la etapa de inscripción. | Arbitro | Media | El sistema genera los cruces emparejando únicamente a los clientes que se encuentran inscritos y aplicando las reglas de la modalidad seleccionada (eliminación directa o grupos). |
+| RF-11 | El sistema debe permitir al árbitro registrar los resultados y marcadores de cada partida en las llaves del torneo. | Arbitro | Media | El sistema avanza automáticamente al ganador a la siguiente ronda de la llave y actualiza la tabla de posiciones si la competencia sigue en la instancia de fase de grupos. |
+| RF-12 | El sistema debe permitir al operador realizar el cierre de caja de su turno, generando un informe consolidado de recaudos y de eventos en el dia. | Operador | Media | El sistema calcula y divide el dinero total recaudado apartado por tiempo de juego, recargos de controles extras, ventas de barra e inscripciones a torneos. |
+| RNF-01 | Todos los datos gestionados por la aplicación (clientes,estaciones de juego, catálogo de inventario, consumos, sesiones activas/cerradas y torneos con sus llaves) deben persistir en almacenamiento permanente | Todos | Alta | Toda la información registrada se conserva componiendose tras cerrar y reiniciar la aplicación, recuperando el estado de la sala, los saldos y el inventario sin perder los datos. |.
        
  Próximos pasos
  
