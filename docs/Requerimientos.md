@@ -95,3 +95,33 @@ RNF-01   Todos los datos gestionados por la aplicación
          consumos, sesiones activas/cerradas                                                       recuperando el estado de la sala, los saldos y el inventario sin perder los datos. 
          y torneos con sus llaves) deben persistir                        
          en almacenamiento permanente.
+       
+ Próximos pasos
+ 
+1. Conformación del equipo
+
+  Tomas Gomez — Responsable de Producto (PO): Me encargo de que el código no se desvíe del problema original. Reviso que cada clase y método que hagamos realmente le sirva a la lógica del Nexus Gaming Arena y no sea código "de relleno".
+   
+Baioleth Rojas y Juan Diego Cuervo — Responsable de Diseño (AR): Lidera el diagrama de clases en UML y es el "policía" del polimorfismo y la herencia. Su trabajo es evitar que hagamos clases gigantes que hagan de todo ("God classes").
+
+Daniel Bernate — Responsable de Calidad (QA): Define cómo vamos a probar el código. Se encarga de meter datos erróneos (como textos donde van números o aforos impares) para verificar que el sistema no se rompa.
+
+Marco — Responsable de Integración (GI): Es el dueño del repositorio. Nos organiza las ramas de Git, vigila que nadie suba código que no compila y revisa que todos tengamos commits parejos.
+
+
+2. Repositorio
+   
+Enlace: https://github.com/gmezosp7-dev/gghub-system.git
+
+Ya creamos el repositorio, invitamos al docente como colaborador, y nos aseguramos de que haya al menos un commit inicial de cada uno de los 5 integrantes para validar que todos tenemos el entorno de desarrollo bien configurado.
+
+3. Plan hacia la Entrega 2
+   
+Para la segunda entrega nos vamos a concentrar en la lógica "cruda" del negocio (sin interfaz gráfica todavía) y en lograr que los datos se guarden en archivos. Planteamos nuestra matriz de trazabilidad inicial abordando primero los siguientes frentes de trabajo:
+
+Gestión de Puestos y Sesiones (RF-01, RF-02, RF-03): Para resolver el inicio de sesión y el cálculo automático de tarifas, implementaremos la clase abstracta PuestoJuego con sus respectivas clases hijas EstacionPC y EstacionConsola, conectadas a una clase Sesion. El objetivo aquí es aplicar herencia y polimorfismo (logrando calcular el costo delegando el comportamiento en vez de usar condicionales if/else), además de consolidar los conceptos de clases y objetos.
+
+Inventario y Consumos (RF-04, RF-05): Para gestionar los productos de la cafetería y sumarlos a una cuenta activa, diseñaremos las clases Producto y GestorCafeteria. En este bloque pondremos en práctica el encapsulamiento, la comunicación entre objetos y el uso estructurado de colecciones (implementando ArrayList para mantener nuestro catálogo en memoria).
+
+Persistencia y Manejo de Errores (RNF-01, RNF-02): Para garantizar que el estado de las máquinas y el inventario sobreviva al cierre del programa, desarrollaremos las clases ArchivoPuestos y ArchivoInventario. Aquí aplicaremos directamente el trabajo con archivos planos (realizando operaciones CRUD básicas) y el manejo de excepciones (try/catch), garantizando que la aplicación capture errores humanos y no colapse inesperadamente.
+
