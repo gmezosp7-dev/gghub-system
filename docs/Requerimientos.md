@@ -116,12 +116,17 @@ Enlace: https://github.com/gmezosp7-dev/gghub-system.git
 Ya creamos el repositorio, invitamos al docente como colaborador, y nos aseguramos de que haya al menos un commit inicial de cada uno de los 5 integrantes para validar que todos tenemos el entorno de desarrollo bien configurado.
 
 3. Plan hacia la Entrega 2
+   Para la segunda entrega nos vamos a concentrar en la lógica "cruda" del negocio (sin interfaz gráfica todavía) y en lograr que los datos se guarden en archivos. Planteamos nuestra matriz de trazabilidad inicial abordando todos los frentes de trabajo definidos en nuestro catálogo:
    
-Para la segunda entrega nos vamos a concentrar en la lógica "cruda" del negocio (sin interfaz gráfica todavía) y en lograr que los datos se guarden en archivos. Planteamos nuestra matriz de trazabilidad inicial abordando primero los siguientes frentes de trabajo:
+### 3. Plan hacia la Entrega 2
+Para la segunda entrega nos vamos a concentrar en la lógica "cruda" del negocio (sin interfaz gráfica todavía) y en lograr que los datos se guarden en archivos. Planteamos nuestra matriz de trazabilidad inicial abordando todos los frentes de trabajo definidos en nuestro catálogo:
 
-Gestión de Puestos y Sesiones (RF-01, RF-02, RF-03): Para resolver el inicio de sesión y el cálculo automático de tarifas, implementaremos la clase abstracta PuestoJuego con sus respectivas clases hijas EstacionPC y EstacionConsola, conectadas a una clase Sesion. El objetivo aquí es aplicar herencia y polimorfismo (logrando calcular el costo delegando el comportamiento en vez de usar condicionales if/else), además de consolidar los conceptos de clases y objetos.
-
-Inventario y Consumos (RF-04, RF-05): Para gestionar los productos de la cafetería y sumarlos a una cuenta activa, diseñaremos las clases Producto y GestorCafeteria. En este bloque pondremos en práctica el encapsulamiento, la comunicación entre objetos y el uso estructurado de colecciones (implementando ArrayList para mantener nuestro catálogo en memoria).
-
-Persistencia y Manejo de Errores (RNF-01, RNF-02): Para garantizar que el estado de las máquinas y el inventario sobreviva al cierre del programa, desarrollaremos las clases ArchivoPuestos y ArchivoInventario. Aquí aplicaremos directamente el trabajo con archivos planos (realizando operaciones CRUD básicas) y el manejo de excepciones (try/catch), garantizando que la aplicación capture errores humanos y no colapse inesperadamente.
+| Requerimiento(s) | Descripción y Clases previstas | Temas del curso | Estado |
+| :--- | :--- | :--- | :--- |
+| **RF-01** (Gestión de Clientes) | Para manejar el registro de los usuarios y validar que no existan documentos duplicados, implementaremos la clase `Cliente` y su controlador `GestorClientes`. | Clases, objetos y encapsulamiento estricto. | Por iniciar |
+| **RF-02, RF-03, RF-04, RF-05** (Puestos, Sesiones y Cobros) | Para resolver la configuración de máquinas, inicio de sesión con controles extra y cálculo de tarifas, usaremos la clase abstracta `PuestoJuego` y sus hijas `EstacionPC` y `EstacionConsola`, conectadas a `SesionJuego` y al enum `EstadoPuesto`. | Herencia, clases abstractas, polimorfismo por sobreescritura (evitando condicionales por tipo), enums, comunicación entre objetos. | Por iniciar |
+| **RF-06, RF-07** (Inventario y Consumos) | Para sumar productos a una cuenta activa o vender de contado descontando stock, diseñaremos las clases `Producto`, `ItemConsumo` e `InventarioBarra`. | Comunicación entre objetos, colecciones (`ArrayList` para catálogo y pedidos). | Por iniciar |
+| **RF-08, RF-09, RF-10, RF-11** (Gestión de Torneos) | Para organizar competencias, registrar participantes y definir ganadores, crearemos la clase `Torneo` vinculada a la clase abstracta `ModalidadTorneo` y sus subclases `EliminacionDirecta` y `FaseGrupos`. | Herencia, polimorfismo puro (para generar cruces y avanzar rondas sin usar *switch*), composición y colecciones. | Por iniciar |
+| **RF-12** (Cierre de Caja Diario) | Para consolidar los ingresos del día discriminando tiempo de juego, cafetería e inscripciones, diseñaremos la clase `CierreCaja` que sumarizará las sesiones cerradas. | Clases, objetos, métodos de cálculo y agregación de datos. | Por iniciar |
+| **RNF-01** (Persistencia) | Para garantizar que el estado de máquinas, inventario y torneos sobreviva al cierre, desarrollaremos `ArchivoPuestos` y `ArchivoInventario`. | Archivos planos desacoplados de la lógica (operaciones de guardado y carga). | Por iniciar |
 
