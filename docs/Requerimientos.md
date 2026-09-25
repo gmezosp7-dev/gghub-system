@@ -130,3 +130,47 @@ Para la segunda entrega nos vamos a concentrar en la lógica "cruda" del negocio
 | **RF-12** (Cierre de Caja Diario) | Para consolidar los ingresos del día discriminando tiempo de juego, cafetería e inscripciones, diseñaremos la clase `CierreCaja` que sumarizará las sesiones cerradas. | Clases, objetos, métodos de cálculo y agregación de datos. | Por iniciar |
 | **RNF-01** (Persistencia) | Para garantizar que el estado de máquinas, inventario y torneos sobreviva al cierre, desarrollaremos `ArchivoPuestos` y `ArchivoInventario`. | Archivos planos desacoplados de la lógica (operaciones de guardado y carga). | Por iniciar |
 
+4.Registro de Decisiones de Diseño POO (GG Hub)
+
+Decisión 1: Estructura de los puestos de juego
+
+Decisión: Armamos la clase PuestoJuego como abstracta para que de ahí se cuelguen las computadoras y las consolas, dejando un método obligatorio para calcular lo que debe pagar cada cliente.
+
+Alternativas consideradas: Hacer una sola clase general con un atributo de texto o usando condicionales if/else y switch para diferenciar los equipos.
+
+Por qué: Las consolas cobran extra por los controles y los mandos adicionales, mientras que las computadoras se calculan por el tipo de tarjeta gráfica o hardware. Si resolviéramos eso con puros condicionales, romperíamos el Principio Abierto/Cerrado y nos llenaríamos de validaciones feas que la universidad nos va a castigar.
+
+Consecuencia: Nos ahorra dolores de cabeza a futuro al permitirnos añadir nuevos equipos fácilmente sin dañar la base del programa.
+
+Decisión 2: Estructura de las modalidades de torneo
+
+Decisión: Creamos una clase abstracta llamada ModalidadTorneo para que de ella salgan las opciones de eliminación directa y fase de grupos, encargándose cada una de armar los cruces y pasar a los ganadores.
+
+Alternativas consideradas: Tirar toda la lógica de los campeonatos dentro de la misma clase Torneo usando variables booleanas para prender o apagar funciones.
+
+Por qué: Una fase de grupos necesita sacar cuentas de puntos, empates y sets, mientras que la eliminación directa bota al que pierde de una vez. Juntar todo eso en una sola clase crearía un monstruo gigante ("God Class") imposible de mantener y lleno de errores.
+
+Consecuencia: Mantiene el código limpio y ordenado, haciendo que cualquier cambio o adición posterior sea mucho más rápido y sencillo.
+
+Decisión 3: Selección y delimitación del dominio del proyecto
+
+Decisión: Nos decidimos de una vez por todas a desarrollar el sistema para el centro de entretenimiento GG Hub, descartando por completo las ideas de hacer un gimnasio o un conjunto residencial.
+
+Alternativas consideradas: Programar un software de administración para un gimnasio o un sistema de control de pagos para un conjunto residencial.
+
+Por qué: El GG Hub nos pone un reto muchísimo más chévere y real, porque exige controlar las computadoras al tiempo, manejar el inventario de la barra en vivo y calcular las llaves de los torneos, lo que justifica perfectamente el uso de herencia, abstracción y estructuras de datos más avanzadas.
+
+Consecuencia: Facilita el desarrollo general del proyecto y nos ayuda a cumplir sin líos con los requisitos de la materia.
+5. Bitácora de uso de IA
+
+B (Bitácora ):
+Solicitamos a Gemini una lluvia de ideas inicial para explorar alternativas de proyectos, planteando opciones como un sistema para gimnasio o para un conjunto residencial, y posteriormente pedimos orientación para delimitar las entidades y clases principales de nuestro centro de entretenimiento. Como respuesta, obtuvimos un listado general de propuestas comerciales y un esquema preliminar compuesto por clases básicas como cliente, empleado, estación, torneo y producto.
+
+C (Crítica):
+Evaluamos las alternativas iniciales y decidimos descartar el gimnasio y el conjunto residencial porque presentaban una lógica y una complejidad técnica muy reducidas. Al revisar el esquema de clases propuesto por Gemini, rechazamos un enfoque procedimental basado en múltiples condicionales o atributos de texto plano, reconociendo la necesidad de implementar una arquitectura orientada a objetos más robusta.
+
+E (Explicación ):
+Modificamos la estructura inicial para establecer clases abstractas y relaciones de herencia en los puestos de juego y las modalidades de torneos, evitando así el uso excesivo de estructuras condicionales. Asimismo, integramos el consumo de la barra de forma directa dentro de la gestión de la sesión para asegurar cobros coherentes y centralizados sin duplicar cuentas en el sistema.
+
+É (Ética):
+Evitamos la adopción ciega de código o estructuras generadas de manera automática por Gemini. Cada clase, método y decisión adoptada fue revisada, comprendida y adaptada por el equipo, asegurando que todos los integrantes posean el conocimiento necesario para sustentar y defender el diseño técnico de manera individual.
