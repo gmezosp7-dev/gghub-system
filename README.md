@@ -121,3 +121,25 @@ Solicitamos a Gemini una lluvia de ideas inicial para explorar alternativas de p
 C (Crítica):
 Evaluamos las alternativas iniciales y decidimos descartar el gimnasio y el conjunto residencial porque presentaban una lógica y una complejidad técnica muy reducidas. Al revisar el esquema de clases propuesto por Gemini, rechazamos un enfoque procedimental basado en múltiples condicionales o atributos de texto plano, reconociendo la necesidad de implementar una arquitectura orientada a objetos más robusta.
 
+
+1. CLASES
+   El dominio se descompuso en entidades independientes como Cliente, PuestoJuego, SesionJuego, Torneo, Producto y CierreCaja. Se aplicó el principio de responsabilidad única para asegurar que cada clase administre exclusivamente sus propios datos y funciones. Esto evita la creación de clases gigantes que intenten hacer todo en el sistema, permitiendo que el código sea limpio, fácil de entender y mantenible a medida que el proyecto crece.
+
+2. ATRIBUTOS Y MÉTODOS ESTÁTICOS
+   Se implementaron en la clase ValidadorDatos para métodos de comprobación de formato (documentoValido, precioValido), y en clases de negocio para definir constantes de estado inmutables (como DISPONIBLE, EN_USO y EN_MANTENIMIENTO en PuestoJuego, y CONTADO o CARGO_SESION en Venta). Los miembros estáticos pertenecen a la clase en general y no a un objeto particular. Su utilidad radica en proveer herramientas de validación global y constantes estandarizadas sin necesidad de instanciar objetos repetidamente, lo cual optimiza el uso de memoria y evita duplicar código en las validaciones.
+
+
+3. CLASES ANIDADAS
+   Se incorporó la clase anidada estática DetalleCargo dentro de la clase contenedora SesionJuego. Esta estructura se utilizó para agrupar datos auxiliares (concepto, cantidad, precio unitario) que solo tienen sentido dentro del contexto de una sesión de juego. Al anidarla, se logra un mejor encapsulamiento, manteniendo el código ordenado y evitando crear clases sueltas en el paquete que solo sirven como apoyo a una entidad principal.
+
+4. INTERFACES
+   Se definieron las interfaces CalculableCobro (para el cálculo de tarifas) y RepositorioArchivo (para estandarizar las operaciones de lectura y escritura en los archivos de texto). Las interfaces actúan como contratos obligatorios que indican a las clases qué métodos deben implementar sin dictar la forma en que deben hacerlo. Esto desacopla el diseño: permite que las clases de negocio trabajen con reglas generales en lugar de depender directamente de implementaciones concretas, facilitando la adición de nuevas funciones sin alterar el resto de la aplicación.
+
+
+5. POLIMORFISMO
+   Se aplicó en tres áreas clave:
+   1. En las estaciones de juego: El método calcularCostoSesion() responde de manera distinta en EstacionPC (aplica tarifa plana por tiempo) y en EstacionConsola (calcula el tiempo sumando automáticamente el recargo por controles adicionales).
+   2. En la gestión de torneos: A través de la clase abstracta ModalidadTorneo, las subclases EliminacionDirecta y FaseGrupos sobrescriben generarCruces() y procesarResultado() con sus propias reglas de juego.
+   3. En la persistencia: Las seis clases de almacenamiento (ArchivoClientes, ArchivoPuestos, ArchivoProductos, ArchivoTorneos, ArchivoSesiones y ArchivoVentas) implementan de forma polimórfica las operaciones básicas de almacenamiento y lectura de datos (guardar, listar, buscar y eliminar) definidas en la interfaz RepositorioArchivo.
+  
+   El polimorfismo evita el uso de condicionales múltiples (if-else o switch) para determinar con qué tipo de objeto se está trabajando. Esto garantiza que el sistema sea abierto a la extensión y cerrado a la modificación, permitiendo incluir nuevos tipos de estaciones o modalidades de torneos en el futuro sin modificar la lógica existente.
