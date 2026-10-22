@@ -2,7 +2,7 @@ PARTE 1 Descripcion del programa
 
 1. CONTEXTO
 
-El negocio que se va a automatizar es Nexus Gaming Arena, un establecimientomediano que pertenece al sector de entretenimiento digital y de deportes electrónicos(e-sports).Cuenta con una infraestructura física dividida en tres áreas principales que son: Una zona de 15 estaciones de PC Gaming, 10 cabinas de consolas de última generación y una barra de venta de snacks y bebidas. Además se organizan torneos presenciales cada semana.
+El negocio que se va a automatizar es GG HUB, un establecimiento mediano que pertenece al sector de entretenimiento digital y de deportes electrónicos(e-sports).Cuenta con una infraestructura física dividida en tres áreas principales que son: Una zona de 15 estaciones de PC Gaming, 10 cabinas de consolas de última generación y una barra de venta de snacks y bebidas. Además se organizan torneos presenciales cada semana.
 
 2. ACTORES
 
