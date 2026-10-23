@@ -121,6 +121,7 @@ Solicitamos a Gemini una lluvia de ideas inicial para explorar alternativas de p
 C (Crítica):
 Evaluamos las alternativas iniciales y decidimos descartar el gimnasio y el conjunto residencial porque presentaban una lógica y una complejidad técnica muy reducidas. Al revisar el esquema de clases propuesto por Gemini, rechazamos un enfoque procedimental basado en múltiples condicionales o atributos de texto plano, reconociendo la necesidad de implementar una arquitectura orientada a objetos más robusta.
 
+ENTREGA #2 - DECISIONES DE DISEÑO DIAGRAMA UML
 
 1. CLASES
    El dominio se descompuso en entidades independientes como Cliente, PuestoJuego, SesionJuego, Torneo, Producto y CierreCaja. Se aplicó el principio de responsabilidad única para asegurar que cada clase administre exclusivamente sus propios datos y funciones. Esto evita la creación de clases gigantes que intenten hacer todo en el sistema, permitiendo que el código sea limpio, fácil de entender y mantenible a medida que el proyecto crece.
