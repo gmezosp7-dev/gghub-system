@@ -1,25 +1,27 @@
-PARTE 1 Descripcion del programa
+# GG Hub — Sistema de gestión
 
-1. CONTEXTO
+## PARTE 1 — Descripción del programa
+
+### 1. Contexto
 
 El negocio que se va a automatizar es GG HUB, un establecimiento mediano que pertenece al sector de entretenimiento digital y de deportes electrónicos(e-sports).Cuenta con una infraestructura física dividida en tres áreas principales que son: Una zona de 15 estaciones de PC Gaming, 10 cabinas de consolas de última generación y una barra de venta de snacks y bebidas. Además se organizan torneos presenciales cada semana.
 
-2. ACTORES
+### 2. Actores
 
 - Administrador de sala: Se encarga de la configuración del negocio. Define los precios tanto base como extras, el aforo de los torneos y se encarga de abastecer el inventario de la barra de snacks y bebidas.
 - Operador: Es el recepcionista que da la atención directa al cliente. Asigna las estaciones de juego, lleva el conteo del tiempo, toma los pedidos de la barra y se encarga también de cobrar.
 - Cliente: Es el usuario final que alquila el tiempo de uso en las estaciones, consume productos del inventario y se inscribe como competidor en los torneos.
 - Árbitro (Para los torneos): Es el mediador durante los eventos competitivos. Su rol es organizar los cruces entre jugadores, registrar los resultados de cada partida y determinar quién avanza a la siguiente fase según la modalidad del torneo (eliminación directa o grupos).
 
-3. PROCESO ACTUAL:
+### 3. Proceso actual
 
 Actualmente, la operación del centro depende de métodos totalmente manuales. El operador registra a los clientes, asigna los equipos y anota los consumos de cafetería usando un cuaderno y notas adhesivas. Por esta razón, al finalizar una sesión, el cobro exige calcular a mano o con calculadora el tiempo exacto de uso, agregar el costo de controles adicionales y sumar los productos consumidos. De la misma manera, la logística de los torneos no cuenta con ningún tipo de sistematización; las llaves de juego se actualizan a mano en un tablero acrílico y el recaudo de inscripciones se maneja exclusivamente en efectivo en una caja separada.
 
-4. DOLOR
+### 4. Dolor
 
 Este modelo de trabajo manual está provocando pérdidas económicas y problemas operativos significativos. Durante las jornadas donde hay una cantidad de clientes alta, es frecuente que se pierda el registro exacto del tiempo de uso o se extravíen las notas de la barra, lo que se traduce en servicios y productos entregados pero no facturados. Asimismo, se suele omitir el recargo por el préstamo de controles adicionales, causando constantes descuadres entre el inventario físico y el cierre de caja al final del día. Por otra parte, la gestión logística de los eventos resulta muy ineficiente, ya que la organización manual de los torneos genera retrasos prolongados en los horarios de inicio, afectando negativamente la experiencia y generando molestias entre los clientes.
 
-5. IMPACTO
+### 5. Impacto
 
 Automatizar este proceso transformará el negocio en tres aspectos importantes:
 
@@ -30,7 +32,7 @@ Automatizar este proceso transformará el negocio en tres aspectos importantes:
 
 
 
-### PARTE 2 Requerimientos
+## PARTE 2 — Requerimientos
 
 | ID | Descripción | Actor | Prioridad | Criterio de aceptación |
 | :--- | :--- | :--- | :--- | :--- |
@@ -46,13 +48,13 @@ Automatizar este proceso transformará el negocio en tres aspectos importantes:
 | RF-10 | El sistema debe permitir al árbitro generar los emparejamientos y llaves de la competencia del torneo una vez que se cerrada la etapa de inscripción. | Arbitro | Media | El sistema genera los cruces emparejando únicamente a los clientes que se encuentran inscritos y aplicando las reglas de la modalidad seleccionada (eliminación directa o grupos). |
 | RF-11 | El sistema debe permitir al árbitro registrar los resultados y marcadores de cada partida en las llaves del torneo. | Arbitro | Media | El sistema avanza automáticamente al ganador a la siguiente ronda de la llave y actualiza la tabla de posiciones si la competencia sigue en la instancia de fase de grupos. |
 | RF-12 | El sistema debe permitir al operador realizar el cierre de caja de su turno, generando un informe consolidado de recaudos y de eventos en el dia. | Operador | Media | El sistema calcula y divide el dinero total recaudado apartado por tiempo de juego, recargos de controles extras, ventas de barra e inscripciones a torneos. |
-| RNF-01 | Todos los datos gestionados por la aplicación (clientes,estaciones de juego, catálogo de inventario, consumos, sesiones activas/cerradas y torneos con sus llaves) deben persistir en almacenamiento permanente | Todos | Alta | Toda la información registrada se conserva componiendose tras cerrar y reiniciar la aplicación, recuperando el estado de la sala, los saldos y el inventario sin perder los datos. |.
-       
- Próximos pasos
- 
-1. Conformación del equipo
+| RNF-01 | Todos los datos gestionados por la aplicación (clientes,estaciones de juego, catálogo de inventario, consumos, sesiones activas/cerradas y torneos con sus llaves) deben persistir en almacenamiento permanente | Todos | Alta | Toda la información registrada se conserva componiendose tras cerrar y reiniciar la aplicación, recuperando el estado de la sala, los saldos y el inventario sin perder los datos. |
 
-  Tomas Gomez — Responsable de Producto (PO): Me encargo de que el código no se desvíe del problema original. Reviso que cada clase y método que hagamos realmente le sirva a la lógica del Nexus Gaming Arena y no sea código "de relleno".
+## Próximos pasos
+
+### 1. Conformación del equipo
+
+  Tomas Gomez — Responsable de Producto (PO): Se encarga de que el código no se desvíe del problema original. Reviso que cada clase y método que hagamos realmente le sirva a la lógica del GG Hub y no sea código "de relleno".
    
 Baioleth Rojas y Juan Diego Cuervo — Responsable de Diseño (AR): Lidera el diagrama de clases en UML y es el "policía" del polimorfismo y la herencia. Su trabajo es evitar que hagamos clases gigantes que hagan de todo ("God classes").
 
@@ -61,15 +63,12 @@ Daniel Bernate — Responsable de Calidad (QA): Define cómo vamos a probar el c
 Marco — Responsable de Integración (GI): Es el dueño del repositorio. Nos organiza las ramas de Git, vigila que nadie suba código que no compila y revisa que todos tengamos commits parejos.
 
 
-2. Repositorio
-   
+### 2. Repositorio
+
 Enlace: https://github.com/gmezosp7-dev/gghub-system.git
 
 Ya creamos el repositorio, invitamos al docente como colaborador, y nos aseguramos de que haya al menos un commit inicial de cada uno de los 5 integrantes para validar que todos tenemos el entorno de desarrollo bien configurado.
 
-3. Plan hacia la Entrega 2
-   Para la segunda entrega nos vamos a concentrar en la lógica "cruda" del negocio (sin interfaz gráfica todavía) y en lograr que los datos se guarden en archivos. Planteamos nuestra matriz de trazabilidad inicial abordando todos los frentes de trabajo definidos en nuestro catálogo:
-   
 ### 3. Plan hacia la Entrega 2
 Para la segunda entrega nos vamos a concentrar en la lógica "cruda" del negocio (sin interfaz gráfica todavía) y en lograr que los datos se guarden en archivos. Planteamos nuestra matriz de trazabilidad inicial abordando todos los frentes de trabajo definidos en nuestro catálogo:
 
@@ -82,9 +81,9 @@ Para la segunda entrega nos vamos a concentrar en la lógica "cruda" del negocio
 | **RF-12** (Cierre de Caja Diario) | Para consolidar los ingresos del día discriminando tiempo de juego, cafetería e inscripciones, diseñaremos la clase `CierreCaja` que sumarizará las sesiones cerradas. | Clases, objetos, métodos de cálculo y agregación de datos. | Por iniciar |
 | **RNF-01** (Persistencia) | Para garantizar que el estado de máquinas, inventario y torneos sobreviva al cierre, desarrollaremos `ArchivoPuestos` y `ArchivoInventario`. | Archivos planos desacoplados de la lógica (operaciones de guardado y carga). | Por iniciar |
 
-4.Registro de Decisiones de Diseño POO (GG Hub)
+### 4. Registro de Decisiones de Diseño POO (GG Hub)
 
-Decisión 1: Estructura de los puestos de juego
+**Decisión 1: Estructura de los puestos de juego**
 
 Decisión: Armamos la clase PuestoJuego como abstracta para que de ahí se cuelguen las computadoras y las consolas, dejando un método obligatorio para calcular lo que debe pagar cada cliente.
 
@@ -94,7 +93,7 @@ Por qué: Las consolas cobran extra por los controles y los mandos adicionales, 
 
 Consecuencia: Nos ahorra dolores de cabeza a futuro al permitirnos añadir nuevos equipos fácilmente sin dañar la base del programa.
 
-Decisión 2: Estructura de las modalidades de torneo
+**Decisión 2: Estructura de las modalidades de torneo**
 
 Decisión: Creamos una clase abstracta llamada ModalidadTorneo para que de ella salgan las opciones de eliminación directa y fase de grupos, encargándose cada una de armar los cruces y pasar a los ganadores.
 
@@ -104,7 +103,7 @@ Por qué: Una fase de grupos necesita sacar cuentas de puntos, empates y sets, m
 
 Consecuencia: Mantiene el código limpio y ordenado, haciendo que cualquier cambio o adición posterior sea mucho más rápido y sencillo.
 
-Decisión 3: Selección y delimitación del dominio del proyecto
+**Decisión 3: Selección y delimitación del dominio del proyecto**
 
 Decisión: Nos decidimos de una vez por todas a desarrollar el sistema para el centro de entretenimiento GG Hub, descartando por completo las ideas de hacer un gimnasio o un conjunto residencial.
 
@@ -113,31 +112,32 @@ Alternativas consideradas: Programar un software de administración para un gimn
 Por qué: El GG Hub nos pone un reto muchísimo más chévere y real, porque exige controlar las computadoras al tiempo, manejar el inventario de la barra en vivo y calcular las llaves de los torneos, lo que justifica perfectamente el uso de herencia, abstracción y estructuras de datos más avanzadas.
 
 Consecuencia: Facilita el desarrollo general del proyecto y nos ayuda a cumplir sin líos con los requisitos de la materia.
-5. Bitácora de uso de IA
 
-B (Bitácora ):
+### 5. Bitácora de uso de IA
+
+**B (Bitácora):**
 Solicitamos a Gemini una lluvia de ideas inicial para explorar alternativas de proyectos, planteando opciones como un sistema para gimnasio o para un conjunto residencial, y posteriormente pedimos orientación para delimitar las entidades y clases principales de nuestro centro de entretenimiento. Como respuesta, obtuvimos un listado general de propuestas comerciales y un esquema preliminar compuesto por clases básicas como cliente, empleado, estación, torneo y producto.
 
-C (Crítica):
+**C (Crítica):**
 Evaluamos las alternativas iniciales y decidimos descartar el gimnasio y el conjunto residencial porque presentaban una lógica y una complejidad técnica muy reducidas. Al revisar el esquema de clases propuesto por Gemini, rechazamos un enfoque procedimental basado en múltiples condicionales o atributos de texto plano, reconociendo la necesidad de implementar una arquitectura orientada a objetos más robusta.
 
-ENTREGA #2 - DECISIONES DE DISEÑO DIAGRAMA UML
+## ENTREGA #2 — Decisiones de diseño (Diagrama UML)
 
-1. CLASES
+### 1. Clases
    El dominio se descompuso en entidades independientes como Cliente, PuestoJuego, SesionJuego, Torneo, Producto y CierreCaja. Se aplicó el principio de responsabilidad única para asegurar que cada clase administre exclusivamente sus propios datos y funciones. Esto evita la creación de clases gigantes que intenten hacer todo en el sistema, permitiendo que el código sea limpio, fácil de entender y mantenible a medida que el proyecto crece.
 
-2. ATRIBUTOS Y MÉTODOS ESTÁTICOS
+### 2. Atributos y métodos estáticos
    Se implementaron en la clase ValidadorDatos para métodos de comprobación de formato (documentoValido, precioValido), y en clases de negocio para definir constantes de estado inmutables (como DISPONIBLE, EN_USO y EN_MANTENIMIENTO en PuestoJuego, y CONTADO o CARGO_SESION en Venta). Los miembros estáticos pertenecen a la clase en general y no a un objeto particular. Su utilidad radica en proveer herramientas de validación global y constantes estandarizadas sin necesidad de instanciar objetos repetidamente, lo cual optimiza el uso de memoria y evita duplicar código en las validaciones.
 
 
-3. CLASES ANIDADAS
+### 3. Clases anidadas
    Se incorporó la clase anidada estática DetalleCargo dentro de la clase contenedora SesionJuego. Esta estructura se utilizó para agrupar datos auxiliares (concepto, cantidad, precio unitario) que solo tienen sentido dentro del contexto de una sesión de juego. Al anidarla, se logra un mejor encapsulamiento, manteniendo el código ordenado y evitando crear clases sueltas en el paquete que solo sirven como apoyo a una entidad principal.
 
-4. INTERFACES
+### 4. Interfaces
    Se definieron las interfaces CalculableCobro (para el cálculo de tarifas) y RepositorioArchivo (para estandarizar las operaciones de lectura y escritura en los archivos de texto). Las interfaces actúan como contratos obligatorios que indican a las clases qué métodos deben implementar sin dictar la forma en que deben hacerlo. Esto desacopla el diseño: permite que las clases de negocio trabajen con reglas generales en lugar de depender directamente de implementaciones concretas, facilitando la adición de nuevas funciones sin alterar el resto de la aplicación.
 
 
-5. POLIMORFISMO
+### 5. Polimorfismo
    Se aplicó en tres áreas clave:
    1. En las estaciones de juego: El método calcularCostoSesion() responde de manera distinta en EstacionPC (aplica tarifa plana por tiempo) y en EstacionConsola (calcula el tiempo sumando automáticamente el recargo por controles adicionales).
    2. En la gestión de torneos: A través de la clase abstracta ModalidadTorneo, las subclases EliminacionDirecta y FaseGrupos sobrescriben generarCruces() y procesarResultado() con sus propias reglas de juego.
