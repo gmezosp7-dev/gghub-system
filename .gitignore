@@ -25,3 +25,9 @@ replay_pid*
 
 # R history
 .Rhistory
+
+# Salida de compilacion
+out/
+# Carpeta de proyecto de IntelliJ IDEA
+.idea/
+*.iml
