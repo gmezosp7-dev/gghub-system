@@ -47,7 +47,7 @@ public class GestorClientes {
         return null;
 
 
-    }
+    }//devuelve copia de lista de los clientes
     public ArrayList<Cliente> listar() {
         return new ArrayList<>(clientes);
     }

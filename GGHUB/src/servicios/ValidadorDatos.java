@@ -16,5 +16,15 @@ public class ValidadorDatos {
         }
         return documento.matches(PATRON_DOCUMENTO);
     }
+    public static boolean precioValido(double precio){
+        return precio > 0;
+    }
+    public static boolean validadorNegativo(double valor){
+        if(valor >= 0){
+            return false;
+
+        }
+        return true;
+    }
 
 }
