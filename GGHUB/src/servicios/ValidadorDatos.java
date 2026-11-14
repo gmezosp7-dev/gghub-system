@@ -6,8 +6,8 @@ package servicios;
 
  */
 public class ValidadorDatos {
-    // "\\d+" significa "uno o mas digitos (0-9)
-    //Es static: hay una sola copia para todo el programa
+    // static final: regla fija del sistema, una sola copia para todo el programa.
+// Si se modificara por error, se dañarian todas las validaciones de documento.
     public static final String PATRON_DOCUMENTO = "\\d+";
     // Lo usa GestorClientes.registrar() antes de agregar un cliente
     public static boolean documentoValido(String documento) {

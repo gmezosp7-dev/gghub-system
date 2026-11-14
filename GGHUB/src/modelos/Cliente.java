@@ -1,7 +1,8 @@
 package modelos;
 
 public class Cliente {
-    // se usa final porque no se vuelve a tocar
+    // final: el documento es la identidad del cliente. Si pudiera cambiar,
+// se podrian tener dos clientes con el mismo documento sin que registrar() lo detecte.
     private final String documento;
     private String nombre;
     private String telefono;

@@ -1,10 +1,8 @@
 import enums.EstadoPuesto;
-import modelos.Cliente;
-import modelos.EstacionConsola;
-import modelos.EstacionPC;
-import modelos.PuestoJuego;
+import modelos.*;
 import servicios.GestorClientes;
 import servicios.GestorPuestos;
+import servicios.GestorSesiones;
 
 import java.awt.font.FontRenderContext;
 
@@ -32,8 +30,16 @@ public class Main {
         PuestoJuego puesto20 = gestor.buscarPorId(20);
         puesto20.cambiarEstado(EstadoPuesto.EN_USO);
         mostrarPuestos(gestor);
-        PuestoJuego puesto99 = gestor.buscarPorId(99);
-        puesto99.cambiarEstado(EstadoPuesto.DISPONIBLE);
+        GestorSesiones gestorSesiones = new GestorSesiones(gestorClientes,gestor);
+        // Pruebas RF-04 (documento, estacion, controles extra)
+        intentarIniciarSesion(gestorSesiones, "1029", 1, 0);    // 1. valida
+        intentarIniciarSesion(gestorSesiones, "10295", 1, 0);   // 2. estacion 1 ya en uso
+        intentarIniciarSesion(gestorSesiones,cliente2.getDocumento(),puesto3.getId(),0); // 3. estacion 3 en mantenimiento
+        intentarIniciarSesion(gestorSesiones, "9999", 2, 0);    // 4. cliente no existe
+        intentarIniciarSesion(gestorSesiones, "10295", 99, 0);  // 5. estacion no existe
+        intentarIniciarSesion(gestorSesiones, "10295", 16, -2); // 6. controles negativos
+        intentarIniciarSesion(gestorSesiones, "10295", 16, 2);  // 7. valida en consola
+        mostrarPuestos(gestor);
 
 
 
@@ -89,6 +95,15 @@ public class Main {
 
         }
 
+    }
+    private static void intentarIniciarSesion(GestorSesiones gestorSesiones, String documento, int id, int controlesExtra) {
+        try {
+            SesionJuego sesion = gestorSesiones.iniciarSesion(documento, id, controlesExtra);
+            System.out.println(sesion);
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
 }
