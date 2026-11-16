@@ -3,6 +3,7 @@ package servicios;
 import modelos.Cliente;
 import modelos.Inscripcion;
 import modelos.Torneo;
+import modelos.Partida;
 
 import java.util.ArrayList;
 
@@ -10,15 +11,16 @@ public class GestorTorneos {
     private ArrayList<Torneo> torneos = new ArrayList<>();
     private GestorClientes gestorClientes;
 
+    //recibe el mismo GestorClientes del Main; si se creara con new estaria vacio y no encontraria a nadie
     public GestorTorneos(GestorClientes gestorClientes) {
         this.gestorClientes = gestorClientes;
     }
 
     //recorre la lista de torneos buscando uno con ese nombre
-    public Torneo buscarPorNombre(String nombre){
+    public Torneo buscarPorNombre(String nombre) {
         //t toma, uno por uno, cada torneo de la lista
         for (Torneo t : torneos) {
-            //se compara el nombre de ESE torneo con el nombre recibido (String -> .equals)
+            //se compara ignorando mayusculas para que "Copa FIFA" y "copa fifa" cuenten como el mismo torneo
             if (t.getNombre().equalsIgnoreCase(nombre)) {
                 return t;
             }
@@ -28,34 +30,52 @@ public class GestorTorneos {
     }
 
     //agrega un torneo a la lista
-    public void registrar(Torneo torneo){
+    public void registrar(Torneo torneo) {
         torneo.validar();
         //comprueba que el torneo no exista en la lista
-        if (buscarPorNombre(torneo.getNombre()) != null){
+        if (buscarPorNombre(torneo.getNombre()) != null) {
             throw new IllegalArgumentException("Ya existe un torneo con el nombre: " + torneo.getNombre());
         }
         torneos.add(torneo);
     }
 
     //devuelve una copia para que nadie pueda modificar la lista original
-    public ArrayList<Torneo> listar(){
+    public ArrayList<Torneo> listar() {
         return new ArrayList<>(torneos);
     }
 
-    public int cantidad(){
+    public int cantidad() {
         return torneos.size();
     }
 
     //Revisa que el Torneo y el documento del cliente existan y deja que el "Torneo" valide antes de inscribirlo
-    public Inscripcion inscribirCliente(String nombreTorneo, String documento){
-        Torneo torneo = buscarPorNombre(nombreTorneo);
-        if (torneo == null){
-            throw new IllegalArgumentException("No existe un torneo con el nombre: " + nombreTorneo);
-        }
+    public Inscripcion inscribirCliente(String nombreTorneo, String documento) {
+        Torneo torneo = buscarTorneoExistente(nombreTorneo);
         Cliente cliente = gestorClientes.buscarPorDocumento(documento);
-        if (cliente == null){
+        if (cliente == null) {
             throw new IllegalArgumentException("No existe un cliente con el documento: " + documento);
         }
         return torneo.inscribir(cliente);
     }
+
+    //private porque solo se usa por otros metodos del gestor que buscan saber si el torneo existe
+    private Torneo buscarTorneoExistente(String nombreTorneo) {
+        Torneo torneo = buscarPorNombre(nombreTorneo);
+        if (torneo == null) {
+            throw new IllegalArgumentException("No existe un torneo con el nombre: " + nombreTorneo);
+        }
+        return torneo;
+    }
+
+    //cerrarInscripciones y generarCruces: buscan el torneo y le delegan la accion; las reglas las valida el Torneo
+    public void cerrarInscripciones(String nombreTorneo) {
+        Torneo torneo = buscarTorneoExistente(nombreTorneo);
+        torneo.cerrarInscripciones();
+    }
+
+    public ArrayList<Partida> generarCruces(String nombreTorneo) {
+        Torneo torneo = buscarTorneoExistente(nombreTorneo);
+        return torneo.generarCruces();
+    }
+
 }

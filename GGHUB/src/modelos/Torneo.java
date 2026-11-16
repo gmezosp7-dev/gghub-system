@@ -12,8 +12,9 @@ public class Torneo {
     private int cupoMaximo;
     private double costoInscripcion;
     private ModalidadTorneo modalidad;  //tipo de la clase padre para poder guardar cualquiera de las dos modalidades (polimorfismo)
-    private boolean inscripcionesAbiertas;
-    private ArrayList<Inscripcion> inscripciones = new ArrayList<>();
+    private boolean inscripcionesAbiertas;  //sin setter: solo se cierra con cerrarInscripciones()
+    private ArrayList<Inscripcion> inscripciones = new ArrayList<>();   //cada torneo tiene sus propios inscritos
+    private ArrayList<Partida> partidas = new ArrayList<>();            //vacia hasta que se generan los cruces
 
     //inicializa los atributos del torneo, empieza con inscripciones abiertas y sin inscritos
     public Torneo(String nombre, String videojuego, LocalDateTime fecha, int cupoMaximo, double costoInscripcion, ModalidadTorneo modalidad) {
@@ -89,36 +90,36 @@ public class Torneo {
     }
 
     //Compara el documento con los que ya están para evitar repetidos
-    public boolean estaInscrito(String documento){
-        for (Inscripcion i : inscripciones){
-            if (documento.equals(i.getCliente().getDocumento())){
+    public boolean estaInscrito(String documento) {
+        for (Inscripcion i : inscripciones) {
+            if (documento.equals(i.getCliente().getDocumento())) {
                 return true;
             }
         }
         return false;
     }
 
-    public int cantidadInscritos(){
+    public int cantidadInscritos() {
         return inscripciones.size();
     }
 
-    public boolean estaLleno(){
-        if(inscripciones.size() >= cupoMaximo){
+    public boolean estaLleno() {
+        if (inscripciones.size() >= cupoMaximo) {
             return true;
         }
         return false;
     }
 
-    //Antes de realizar una inscripcion revisa si está abierto, si hay cupos y si hay algún error con el documento;
-    //si pasa los if, se inscribe el cliente
-    public Inscripcion inscribir(Cliente cliente){
-        if(!inscripcionesAbiertas){
+    //valida todo primero (abierto, no repetido, hay cupo) y solo al final crea, agrega y devuelve,
+    //para no dejar la lista a medias
+    public Inscripcion inscribir(Cliente cliente) {
+        if (!inscripcionesAbiertas) {
             throw new IllegalArgumentException("Las inscripciones del torneo " + getNombre() + " estan cerradas");
         }
-        if (estaInscrito(cliente.getDocumento())){
+        if (estaInscrito(cliente.getDocumento())) {
             throw new IllegalArgumentException("El cliente con el documento: " + cliente.getDocumento() + " ya esta inscrito en: " + getNombre());
         }
-        if (estaLleno()){
+        if (estaLleno()) {
             throw new IllegalArgumentException("El torneo " + getNombre() + " esta lleno, el cupo maximo es de " + getCupoMaximo());
         }
         Inscripcion nuevaInscripcion = new Inscripcion(cliente, costoInscripcion);
@@ -129,4 +130,34 @@ public class Torneo {
     public ArrayList<Inscripcion> getInscripciones() {
         return new ArrayList<>(inscripciones);
     }
+
+    //Encapsulamiento: en vez de usar un set, se usa un metodo que no expone el dato, sino una acción con reglas
+    //por lo que solo permite cerrar, nunca volver a abrir
+    public void cerrarInscripciones() {
+        if (!inscripcionesAbiertas) {
+            throw new IllegalArgumentException("Las inscripciones del torneo: " + getNombre() + " ya estan cerradas");
+        }
+        if (cantidadInscritos() < 2) {
+            throw new IllegalArgumentException("se necesitan al menos 2 inscritos para cerrar el torneo " + nombre + ", hay: " + cantidadInscritos());
+        }
+        inscripcionesAbiertas = false;
+    }
+
+    //solo se puede generar con inscripciones cerradas y una sola vez (si no, se duplicarian las partidas)
+    public ArrayList<Partida> generarCruces() {
+        if (inscripcionesAbiertas) {
+            throw new IllegalArgumentException("Primero se deben cerrar las inscripciones del torneo: " + getNombre());
+        }
+        if (!partidas.isEmpty()) {
+            throw new IllegalArgumentException("Los cruces del torneo: " + getNombre() + " ya fueron generados");
+        }
+        //polimorfismo: sin preguntar que modalidad es, cada una genera los cruces a su manera
+        partidas = modalidad.generarCruces(inscripciones);
+        return getPartidas();
+    }
+
+    public ArrayList<Partida> getPartidas() {
+        return new ArrayList<>(partidas);
+    }
+
 }

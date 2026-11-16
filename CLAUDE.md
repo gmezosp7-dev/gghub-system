@@ -28,7 +28,7 @@ Proyecto de la materia **Programación Orientada a Objetos** (Universidad de La 
 - Strings se comparan con `.equals()`; `int` y enums con `==`.
 - Nada de `if` por tipo de clase (`instanceof`): usar polimorfismo (ej. `validar()` sobreescrito).
 
-## Estado actual (RF-01 a RF-04 en `main`; RF-08 y RF-09 en la rama `torneos`, pendientes de merge)
+## Estado actual (RF-01 a RF-04 en `main`; RF-08 a RF-10 en la rama `torneos`, pendientes de merge)
 
 | RF | Clases | Notas |
 |---|---|---|
@@ -38,6 +38,7 @@ Proyecto de la materia **Programación Orientada a Objetos** (Universidad de La 
 | RF-04 Sesiones | `modelos.SesionJuego`, `servicios.GestorSesiones` | sesión con `final` cliente, puesto e inicio (`LocalDateTime.now()`), `controlesExtra` (cantidad). `iniciarSesion(documento, idPuesto, controlesExtra)` valida cliente, puesto, disponibilidad y controles; pone el puesto EN_USO |
 | RF-08 Torneos (rama `torneos`) | `modelos.ModalidadTorneo` (abstracta, `getNombre()` abstracto), `EliminacionDirecta`, `FaseGrupos`, `modelos.Torneo`, `servicios.GestorTorneos` | `nombre` `final` es el identificador; `modalidad` tipada como la clase padre; `inscripcionesAbiertas` arranca `true`. `Torneo.validar()`: nombre no null/vacío, modalidad no null, fecha no null ni anterior a `LocalDateTime.now()` (`isBefore`), cupo ≥ 2, `precioValido(costo)`. `GestorTorneos.buscarPorNombre()` usa `equalsIgnoreCase`; `registrar()` llama `validar()` y rechaza nombres repetidos |
 | RF-09 Inscripciones (rama `torneos`) | `modelos.Inscripcion`, cambios en `Torneo` y `GestorTorneos` | `Inscripcion`: `final` cliente, fecha (`now()`) y `montoPagado` (`double`, copia del costo al inscribirse). `Torneo` tiene `ArrayList<Inscripcion>`, `estaInscrito(documento)`, `cantidadInscritos()`, `estaLleno()`, `inscribir(Cliente)` (valida abiertas, repetido por documento y cupo; luego crea, agrega y devuelve) y `getInscripciones()` (copia). `GestorTorneos` recibe `GestorClientes` por constructor; `inscribirCliente(nombreTorneo, documento)` busca ambos y delega en `torneo.inscribir()` |
+| RF-10 Cruces (rama `torneos`) | `modelos.Partida`, `generarCruces(ArrayList<Inscripcion>)` abstracto en `ModalidadTorneo`, cambios en `Torneo` y `GestorTorneos` | `Partida`: `final` ronda, jugador1, jugador2; `ganador` sin final; si `jugador2 == null` es pase directo y el ganador es jugador1; `esPaseDirecto()`, `estaJugada()`. `EliminacionDirecta`: parejas consecutivas (`i += 2`), el impar pasa directo. `FaseGrupos`: todos contra todos en un solo grupo (`j = i + 1`, n·(n−1)/2 partidas). `Torneo.cerrarInscripciones()` (exige ≥ 2 inscritos, solo cierra, no hay setter) y `generarCruces()` (exige inscripciones cerradas, no permite generar dos veces, `partidas = modalidad.generarCruces(...)` sin if por tipo). `GestorTorneos`: ayudante `private buscarTorneoExistente()` (lanza error si no existe), `cerrarInscripciones(nombre)`, `generarCruces(nombre)` |
 
 `tarifaControlExtra` (precio por control, en `EstacionConsola`) ≠ `controlesExtra` (cantidad, en `SesionJuego`).
 
@@ -64,5 +65,6 @@ El UML original (HTML de la Entrega 2) tiene vacíos e inconsistencias. **No se 
 - Pendientes menores: renombrar `especifiaciones` → `especificaciones` en `EstacionPC`; que el mensaje "id ya repetido" de `GestorPuestos` diga cuál id.
 - **Torneos (RF-08):** se agregó `GestorTorneos`; `Torneo.nombre` es el identificador (el UML no le da id); `arbitro` no se implementa (ningún RF lo pide guardar); `ModalidadTorneo` tiene `getNombre()` abstracto (`generarCruces` y `procesarResultado` llegan en RF-10/RF-11).
 - **Torneos (RF-09):** `Inscripcion` tiene `cliente` (el UML no lo tenía) y `montoPagado` en vez de `pagada` + `confirmarPago()` (el cobro se registra al inscribirse; `montoPagado` sirve al cierre de caja RF-12). `posicionFinal` se deja para RF-11. `Torneo` tiene la lista `inscripciones`. No usa `MetodoPago` todavía (es de Marco, aún no existe).
-- **Torneos, vacíos del UML a resolver más adelante:** `Partida` necesita los dos jugadores; `FaseGrupos` usará `ArrayList` en vez de arreglos; falta `cerrarInscripciones()` (RF-10) para probar el bloqueo por inscripciones cerradas.
+- **Torneos (RF-10):** `generarCruces` devuelve `ArrayList<Partida>` (no `Partida[]`) y recibe las inscripciones; `Partida` tiene `jugador1` y `jugador2` (el UML no los tenía) y representa el pase directo con `jugador2 == null`. Decisión de diseño: fase de grupos = un solo grupo todos contra todos (no varios grupos + eliminatoria). `marcador` / `registrarMarcador()` llegan en RF-11.
+- **Torneos, pendiente para RF-11:** registrar resultados en `Partida`; avanzar ganadores de ronda en `EliminacionDirecta` (incluye pases directos); tabla de posiciones en `FaseGrupos` (el UML usa arreglos `participantes`/`puntos`: usar `ArrayList`).
 - Pendiente menor de torneos: validar que `videojuego` no sea null/vacío en `Torneo.validar()` (recomendado, no exigido por el criterio de aceptación del RF-08).
