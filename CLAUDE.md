@@ -29,7 +29,7 @@ Proyecto de la materia **Programación Orientada a Objetos** (Universidad de La 
 - Strings se comparan con `.equals()`; `int` y enums con `==`.
 - Nada de `if` por tipo de clase (`instanceof`): usar polimorfismo (ej. `validar()` sobreescrito).
 
-## Estado actual (RF-01 a RF-05 terminados)
+## Estado actual (RF-01 a RF-06 terminados)
 
 | RF | Clases | Notas |
 |---|---|---|
@@ -38,12 +38,13 @@ Proyecto de la materia **Programación Orientada a Objetos** (Universidad de La 
 | RF-03 Estado | `enums.EstadoPuesto` {DISPONIBLE, EN_USO, EN_MANTENIMIENTO} | estado arranca DISPONIBLE; `estaDisponible()`, `cambiarEstado()` (rechaza null); `crearSala()` en Main crea PCs 1-15 y consolas 16-25 |
 | RF-04 Sesiones | `modelos.SesionJuego`, `servicios.GestorSesiones` | sesión con `final` cliente, puesto e inicio (`LocalDateTime.now()`), `controlesExtra` (cantidad). `iniciarSesion(documento, idPuesto, controlesExtra)` valida cliente, puesto, disponibilidad y controles; pone el puesto EN_USO |
 | RF-05 Cobro | `interfaces.CalculableCobro`, `calcularCostoSesion(horas, controles)` en `EstacionPC` / `EstacionConsola` | `PuestoJuego implements CalculableCobro` sin implementarlo (lo hacen las hijas). `SesionJuego.finalizar()` guarda `fin`, minutos con `Duration` / 60.0, `total` = puesto.calcularCostoSesion (polimorfismo); rechaza finalizar dos veces; `estaActiva()`. `GestorSesiones.buscarSesionActiva(idPuesto)` y `finalizarSesion(idPuesto)` → puesto DISPONIBLE. Consumos de barra se sumarán en RF-07 |
+| RF-06 Productos | `modelos.Producto`, `servicios.InventarioBarra` | `codigo` `final` (String); `validar()` exige código y precio, costo y stock no negativos; `setPrecioVenta()` valida; `agregarStock()` (> 0, suma); `hayStock(cant)`. Inventario: `registrarProducto`, `buscarProducto(codigo)`, `actualizarPrecio(codigo, precio)`, `reabastecer(codigo, cant)`, `listar()` copia, `cantidad()`. Categoría es `String` (no enum) porque el admin define nuevas |
 
 `tarifaControlExtra` (precio por control, en `EstacionConsola`) ≠ `controlesExtra` (cantidad, en `SesionJuego`).
 
 ## Lo que falta y quién lo hace
 
-- **Marco (dueño del repo, integración):** RF-06 productos, RF-07 ventas de barra (usa `MetodoPago`), RF-12 cierre de caja, RNF-01 persistencia en `.txt`.
+- **Marco (dueño del repo, integración):** RF-07 ventas de barra (usa `MetodoPago`), RF-12 cierre de caja, RNF-01 persistencia en `.txt`.
 - **Compañero:** **torneos, RF-08 a RF-11** — `Torneo`, `Inscripcion`, `ModalidadTorneo` (abstracta) con `EliminacionDirecta` y `FaseGrupos`, `Partida`, y un `GestorTorneos`. Solo depende de `Cliente`/`GestorClientes` (no modificarlos sin avisar a Marco).
 
 ## Flujo de Git para trabajar en paralelo

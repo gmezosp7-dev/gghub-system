@@ -2,6 +2,7 @@ import modelos.*;
 import servicios.GestorClientes;
 import servicios.GestorPuestos;
 import servicios.GestorSesiones;
+import servicios.InventarioBarra;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -61,6 +62,27 @@ public class Main {
         mostrarCobro(gestor.buscarPorId(16), 2.0, 0);   // Consola: 2 x 9.5 = 19.0
         mostrarCobro(gestor.buscarPorId(16), 2.0, 3);   // Consola: 19.0 + 3 x 1.0 = 22.0
         mostrarCobro(gestor.buscarPorId(16), 1.5, 1);   // Consola: 14.25 + 1.0 = 15.25
+
+        // Pruebas RF-06: registrar y actualizar productos de la barra
+        // Producto(codigo, nombre, categoria, costo, precioVenta, stock)
+        System.out.println("\n=== RF-06: productos de la barra ===");
+        InventarioBarra inventario = new InventarioBarra();
+        intentarRegistrarProducto(inventario, new Producto("BEB-001", "Coca-Cola", "bebidas", 2000, 3500, 20)); // 1. valido
+        intentarRegistrarProducto(inventario, new Producto("SNK-001", "Papas", "snacks", 1200, 2500, 15));      // 2. valido
+        intentarRegistrarProducto(inventario, new Producto("SNK-002", "Chocolatina", "snacks", 800, 1800, 0));  // 3. valido: stock 0 (agotado)
+        intentarRegistrarProducto(inventario, new Producto("BEB-001", "Pepsi", "bebidas", 2000, 3500, 10));     // 4. codigo repetido
+        intentarRegistrarProducto(inventario, new Producto("BEB-002", "Agua", "bebidas", 500, -1000, 10));      // 5. precio negativo
+        intentarRegistrarProducto(inventario, new Producto("BEB-003", "Jugo", "bebidas", 900, 2000, -4));       // 6. stock negativo
+        intentarRegistrarProducto(inventario, new Producto("", "Sin codigo", "snacks", 100, 200, 1));           // 7. codigo vacio
+        System.out.println("Productos registrados: " + inventario.cantidad());                                  // deben ser 3
+
+        intentarActualizarPrecio(inventario, "BEB-001", 4000);  // 8. precio valido: 3500 -> 4000
+        intentarActualizarPrecio(inventario, "BEB-001", -50);   // 9. precio negativo: no cambia
+        intentarActualizarPrecio(inventario, "XXX-999", 100);   // 10. codigo que no existe
+        intentarReabastecer(inventario, "SNK-002", 12);         // 11. chocolatina: 0 -> 12
+        intentarReabastecer(inventario, "SNK-002", 0);          // 12. reabastecer 0: no tiene sentido
+        intentarReabastecer(inventario, "XXX-999", 5);          // 13. codigo que no existe
+        mostrarInventario(inventario);                          // Coca-Cola a 4000 y chocolatina con 12
 
 
 
@@ -152,6 +174,39 @@ public class Main {
         }
         catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
+        }
+    }
+    private static void intentarRegistrarProducto(InventarioBarra inventario, Producto producto) {
+        try {
+            inventario.registrarProducto(producto);
+            System.out.println("Registrado: " + producto);
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    private static void intentarActualizarPrecio(InventarioBarra inventario, String codigo, double nuevoPrecio) {
+        try {
+            inventario.actualizarPrecio(codigo, nuevoPrecio);
+            System.out.println("Precio de " + codigo + " actualizado a $" + nuevoPrecio);
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    private static void intentarReabastecer(InventarioBarra inventario, String codigo, int cantidad) {
+        try {
+            inventario.reabastecer(codigo, cantidad);
+            System.out.println("Reabastecido " + codigo + " con " + cantidad + " unidades");
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    private static void mostrarInventario(InventarioBarra inventario) {
+        System.out.println("--- Inventario de la barra ---");
+        for (Producto p : inventario.listar()) {
+            System.out.println(p);
         }
     }
     // la variable es PuestoJuego: Java ejecuta el calcularCostoSesion del objeto real (PC o consola)
