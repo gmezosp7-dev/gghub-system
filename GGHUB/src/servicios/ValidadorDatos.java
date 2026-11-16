@@ -19,6 +19,11 @@ public class ValidadorDatos {
     public static boolean precioValido(double precio){
         return precio > 0;
     }
+    // true si el texto no es null y no esta en blanco ("" o "   ").
+    // Se revisa el null primero: con && Java no evalua isBlank() si ya dio false.
+    public static boolean textoValido(String texto){
+        return texto != null && !texto.isBlank();
+    }
     public static boolean validadorNegativo(double valor){
         if(valor >= 0){
             return false;

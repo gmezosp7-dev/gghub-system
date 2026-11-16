@@ -1,4 +1,3 @@
-import enums.EstadoPuesto;
 import modelos.*;
 import servicios.GestorClientes;
 import servicios.GestorPuestos;
@@ -23,21 +22,27 @@ public class Main {
         crearSala(gestor);
 
         cantidadPuestos(gestor);
-        PuestoJuego puesto3 = gestor.buscarPorId(3);
-        puesto3.cambiarEstado(EstadoPuesto.EN_MANTENIMIENTO);
-        PuestoJuego puesto20 = gestor.buscarPorId(20);
-        puesto20.cambiarEstado(EstadoPuesto.EN_USO);
+        // el mantenimiento entra por el gestor (con reglas), nunca con cambiarEstado directo
+        intentarMantenimiento(gestor, 3);              // la 3 pasa a mantenimiento
         mostrarPuestos(gestor);
         GestorSesiones gestorSesiones = new GestorSesiones(gestorClientes,gestor);
         // Pruebas RF-04 (documento, estacion, controles extra)
         intentarIniciarSesion(gestorSesiones, "1029", 1, 0);    // 1. valida
         intentarIniciarSesion(gestorSesiones, "10295", 1, 0);   // 2. estacion 1 ya en uso
-        intentarIniciarSesion(gestorSesiones,cliente2.getDocumento(),puesto3.getId(),0); // 3. estacion 3 en mantenimiento
+        intentarIniciarSesion(gestorSesiones,cliente2.getDocumento(), 3, 0); // 3. estacion 3 en mantenimiento
         intentarIniciarSesion(gestorSesiones, "9999", 2, 0);    // 4. cliente no existe
         intentarIniciarSesion(gestorSesiones, "10295", 99, 0);  // 5. estacion no existe
         intentarIniciarSesion(gestorSesiones, "10295", 16, -2); // 6. controles negativos
         intentarIniciarSesion(gestorSesiones, "10295", 16, 2);  // 7. valida en consola
         mostrarPuestos(gestor);
+
+        // Pruebas de las reglas de mantenimiento
+        System.out.println("\n=== Mantenimiento ===");
+        intentarMantenimiento(gestor, 1);      // la 1 tiene a pasco jugando: no se le quita
+        intentarMantenimiento(gestor, 99);     // no existe
+        intentarQuitarMantenimiento(gestor, 2); // la 2 no esta en mantenimiento
+        intentarQuitarMantenimiento(gestor, 3); // la 3 vuelve a DISPONIBLE
+        intentarMantenimiento(gestor, 3);      // y otra vez a mantenimiento para las pruebas de abajo
 
         // Pruebas RF-05: finalizar sesion, cobrar y liberar la estacion
         System.out.println("\n=== RF-05: finalizar y cobrar ===");
@@ -126,6 +131,24 @@ public class Main {
             SesionJuego sesion = gestorSesiones.finalizarSesion(id);
             System.out.println("Sesion finalizada en el puesto " + id + " | cliente: "
                     + sesion.getCliente().getNombre() + " | total: $" + sesion.getTotal());
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    private static void intentarMantenimiento(GestorPuestos gestorPuestos, int id) {
+        try {
+            gestorPuestos.ponerEnMantenimiento(id);
+            System.out.println("Puesto " + id + " en mantenimiento");
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    private static void intentarQuitarMantenimiento(GestorPuestos gestorPuestos, int id) {
+        try {
+            gestorPuestos.quitarMantenimiento(id);
+            System.out.println("Puesto " + id + " disponible de nuevo");
         }
         catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());

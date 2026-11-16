@@ -1,5 +1,6 @@
 package servicios;
 
+import enums.EstadoPuesto;
 import modelos.PuestoJuego;
 
 import java.util.ArrayList;
@@ -41,6 +42,32 @@ public class GestorPuestos {
     //otorga una copia de la lista original para mostrar objetos creados
     public ArrayList<PuestoJuego> listar(){
         return new ArrayList<>(puestos);
+    }
+
+    // Regla: EN_USO y DISPONIBLE los ponen las sesiones (GestorSesiones);
+    // el mantenimiento solo entra por estos dos metodos, que revisan antes de cambiar.
+    public void ponerEnMantenimiento(int id){
+        PuestoJuego puesto = buscarPorId(id);
+        if (puesto == null){
+            throw new IllegalArgumentException("No existe un puesto de juego con el id: " + id);
+        }
+        // no se le quita la estacion a alguien que esta jugando
+        if (!puesto.estaDisponible()){
+            throw new IllegalArgumentException("Solo se puede poner en mantenimiento una estacion disponible; el puesto "
+                    + id + " esta en: " + puesto.getEstado());
+        }
+        puesto.cambiarEstado(EstadoPuesto.EN_MANTENIMIENTO);
+    }
+
+    public void quitarMantenimiento(int id){
+        PuestoJuego puesto = buscarPorId(id);
+        if (puesto == null){
+            throw new IllegalArgumentException("No existe un puesto de juego con el id: " + id);
+        }
+        if (puesto.getEstado() != EstadoPuesto.EN_MANTENIMIENTO){
+            throw new IllegalArgumentException("El puesto " + id + " no esta en mantenimiento");
+        }
+        puesto.cambiarEstado(EstadoPuesto.DISPONIBLE);
     }
 }
 

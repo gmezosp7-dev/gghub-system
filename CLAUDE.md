@@ -3,7 +3,7 @@
 Proyecto de la materia **Programación Orientada a Objetos** (Universidad de La Sabana). Sistema en **Java 21** para el centro de e-sports **GG Hub**: 15 PCs, 10 consolas, barra de snacks y torneos. Los requerimientos (RF-01 a RF-12 y RNF-01) están en `README.md`.
 
 - Código: proyecto de IntelliJ en `GGHUB/`, fuentes en `GGHUB/src`.
-- Compilar y correr desde `GGHUB/src`: `javac -d <carpeta_salida> enums/*.java modelos/*.java servicios/*.java Main.java` y luego `java -cp <carpeta_salida> Main`.
+- Compilar y correr desde `GGHUB/src`: `javac -d <carpeta_salida> interfaces/*.java enums/*.java modelos/*.java servicios/*.java Main.java` y luego `java -cp <carpeta_salida> Main`.
 - La estructura sigue el repo de ejemplo del profesor: https://github.com/wilmertri/SistemaGestionBiblioteca
 
 ## Cómo trabajar con quien te use (MUY IMPORTANTE)
@@ -22,7 +22,8 @@ Proyecto de la materia **Programación Orientada a Objetos** (Universidad de La 
 - El profesor **sí permite** `ArrayList`, genéricos y `enum` (el UML viejo dice lo contrario: está desactualizado).
 - Un **gestor** por entidad en `servicios`: lista `private ArrayList<...>`, `registrar(...)` que valida antes de agregar, `buscarPor...()` que devuelve el objeto o `null`, `listar()` que devuelve **una copia** (`new ArrayList<>(lista)`), `cantidad()`.
 - Errores de negocio: `throw new IllegalArgumentException("mensaje claro, con el dato que falló")`. En `Main`, métodos `private static intentarX(...)` con `try/catch` que imprimen `e.getMessage()`.
-- Validaciones reutilizables en `servicios.ValidadorDatos` (todo `static`): `PATRON_DOCUMENTO`, `documentoValido(String)`, `precioValido(double)` (> 0), `validadorNegativo(double)` (true si el valor es < 0).
+- Validaciones reutilizables en `servicios.ValidadorDatos` (todo `static`): `PATRON_DOCUMENTO`, `documentoValido(String)`, `precioValido(double)` (> 0), `validadorNegativo(double)` (true si el valor es < 0), `textoValido(String)` (no null y no en blanco).
+- Estados de estación: **nadie llama `cambiarEstado()` directo** salvo los gestores. `EN_USO`/`DISPONIBLE` los pone `GestorSesiones`; el mantenimiento entra solo por `GestorPuestos.ponerEnMantenimiento(id)` / `quitarMantenimiento(id)`. `iniciarSesion` además rechaza si ya hay una sesión activa en esa estación.
 - Un gestor que necesita otro **lo recibe por constructor** (el mismo objeto del `Main`), nunca lo crea con `new`.
 - `toString()` con `@Override` en cada modelo; las hijas usan `super.toString()`.
 - Strings se comparan con `.equals()`; `int` y enums con `==`.

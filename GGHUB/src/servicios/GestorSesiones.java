@@ -28,6 +28,11 @@ public class GestorSesiones {
         if(!puestoJuego.estaDisponible()){
             throw new IllegalArgumentException("El puesto de juego "+id +" se encuentra en: " + puestoJuego.getEstado());
         }
+        // segundo control (programacion defensiva): el estado es solo un "letrero";
+        // las sesiones son la realidad. Si ya hay una abierta en esa estacion, no se abre otra.
+        if (buscarSesionActiva(id) != null){
+            throw new IllegalArgumentException("El puesto de juego " + id + " ya tiene una sesion abierta");
+        }
         if(ValidadorDatos.validadorNegativo(controlesExtra)){
             throw new IllegalArgumentException("la cantidad de controles extra no puede ser negativa");
         }
