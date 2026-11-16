@@ -4,8 +4,6 @@ import servicios.GestorClientes;
 import servicios.GestorPuestos;
 import servicios.GestorSesiones;
 
-import java.awt.font.FontRenderContext;
-
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
@@ -40,6 +38,24 @@ public class Main {
         intentarIniciarSesion(gestorSesiones, "10295", 16, -2); // 6. controles negativos
         intentarIniciarSesion(gestorSesiones, "10295", 16, 2);  // 7. valida en consola
         mostrarPuestos(gestor);
+
+        // Pruebas RF-05: finalizar sesion, cobrar y liberar la estacion
+        System.out.println("\n=== RF-05: finalizar y cobrar ===");
+        intentarFinalizarSesion(gestorSesiones, 1);   // 1. PC de pasco: se cobra y se libera
+        intentarFinalizarSesion(gestorSesiones, 1);   // 2. ya se cobro: no hay sesion activa
+        intentarFinalizarSesion(gestorSesiones, 16);  // 3. consola con 2 controles
+        intentarFinalizarSesion(gestorSesiones, 2);   // 4. estacion sin ninguna sesion
+        intentarFinalizarSesion(gestorSesiones, 99);  // 5. estacion que no existe
+        mostrarPuestos(gestor);                       // la 1 y la 16 deben volver a DISPONIBLE
+
+        // El Main corre en milisegundos (0 minutos jugados), asi que la parte del tiempo
+        // se prueba llamando directo al cobro polimorfico con horas fijas.
+        System.out.println("\n=== RF-05: cobro polimorfico con horas fijas ===");
+        mostrarCobro(gestor.buscarPorId(1), 2.0, 0);    // PC: 2 x 10.0 = 20.0
+        mostrarCobro(gestor.buscarPorId(1), 2.0, 3);    // PC ignora controles: 20.0
+        mostrarCobro(gestor.buscarPorId(16), 2.0, 0);   // Consola: 2 x 9.5 = 19.0
+        mostrarCobro(gestor.buscarPorId(16), 2.0, 3);   // Consola: 19.0 + 3 x 1.0 = 22.0
+        mostrarCobro(gestor.buscarPorId(16), 1.5, 1);   // Consola: 14.25 + 1.0 = 15.25
 
 
 
@@ -104,6 +120,21 @@ public class Main {
         catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
+    }
+    private static void intentarFinalizarSesion(GestorSesiones gestorSesiones, int id) {
+        try {
+            SesionJuego sesion = gestorSesiones.finalizarSesion(id);
+            System.out.println("Sesion finalizada en el puesto " + id + " | cliente: "
+                    + sesion.getCliente().getNombre() + " | total: $" + sesion.getTotal());
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    // la variable es PuestoJuego: Java ejecuta el calcularCostoSesion del objeto real (PC o consola)
+    private static void mostrarCobro(PuestoJuego puesto, double horas, int controles) {
+        System.out.println("Puesto " + puesto.getId() + " | " + horas + " h | " + controles
+                + " controles -> $" + puesto.calcularCostoSesion(horas, controles));
     }
 
 }

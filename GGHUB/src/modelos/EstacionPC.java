@@ -16,6 +16,10 @@ public class EstacionPC extends PuestoJuego {
     public String toString(){
         return "[Pc] "+  super.toString() + " Especifiaciones: "+ getEspecifiaciones() +" |";
     }
+    @Override
+    public double calcularCostoSesion (double horasJugadas,int controlesExtra){
+        return getTarifaHora() * horasJugadas ;
+    }
 
 
 

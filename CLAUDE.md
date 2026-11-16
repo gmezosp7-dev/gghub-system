@@ -28,7 +28,7 @@ Proyecto de la materia **Programación Orientada a Objetos** (Universidad de La 
 - Strings se comparan con `.equals()`; `int` y enums con `==`.
 - Nada de `if` por tipo de clase (`instanceof`): usar polimorfismo (ej. `validar()` sobreescrito).
 
-## Estado actual (RF-01 a RF-04 terminados y en GitHub)
+## Estado actual (RF-01 a RF-05 terminados)
 
 | RF | Clases | Notas |
 |---|---|---|
@@ -36,12 +36,13 @@ Proyecto de la materia **Programación Orientada a Objetos** (Universidad de La 
 | RF-02 Estaciones | `modelos.PuestoJuego` (abstracta), `EstacionPC`, `EstacionConsola`, `servicios.GestorPuestos` | constructor `protected`; `validar()` polimórfico (la consola valida además `tarifaControlExtra` no negativa); ids compartidos entre PC y consola |
 | RF-03 Estado | `enums.EstadoPuesto` {DISPONIBLE, EN_USO, EN_MANTENIMIENTO} | estado arranca DISPONIBLE; `estaDisponible()`, `cambiarEstado()` (rechaza null); `crearSala()` en Main crea PCs 1-15 y consolas 16-25 |
 | RF-04 Sesiones | `modelos.SesionJuego`, `servicios.GestorSesiones` | sesión con `final` cliente, puesto e inicio (`LocalDateTime.now()`), `controlesExtra` (cantidad). `iniciarSesion(documento, idPuesto, controlesExtra)` valida cliente, puesto, disponibilidad y controles; pone el puesto EN_USO |
+| RF-05 Cobro | `interfaces.CalculableCobro`, `calcularCostoSesion(horas, controles)` en `EstacionPC` / `EstacionConsola` | `PuestoJuego implements CalculableCobro` sin implementarlo (lo hacen las hijas). `SesionJuego.finalizar()` guarda `fin`, minutos con `Duration` / 60.0, `total` = puesto.calcularCostoSesion (polimorfismo); rechaza finalizar dos veces; `estaActiva()`. `GestorSesiones.buscarSesionActiva(idPuesto)` y `finalizarSesion(idPuesto)` → puesto DISPONIBLE. Consumos de barra se sumarán en RF-07 |
 
 `tarifaControlExtra` (precio por control, en `EstacionConsola`) ≠ `controlesExtra` (cantidad, en `SesionJuego`).
 
 ## Lo que falta y quién lo hace
 
-- **Marco (dueño del repo, integración):** RF-05 finalizar y cobrar (interfaz `CalculableCobro`, cobro polimórfico PC/consola), RF-06 productos, RF-07 ventas de barra (usa `MetodoPago`), RF-12 cierre de caja, RNF-01 persistencia en `.txt`.
+- **Marco (dueño del repo, integración):** RF-06 productos, RF-07 ventas de barra (usa `MetodoPago`), RF-12 cierre de caja, RNF-01 persistencia en `.txt`.
 - **Compañero:** **torneos, RF-08 a RF-11** — `Torneo`, `Inscripcion`, `ModalidadTorneo` (abstracta) con `EliminacionDirecta` y `FaseGrupos`, `Partida`, y un `GestorTorneos`. Solo depende de `Cliente`/`GestorClientes` (no modificarlos sin avisar a Marco).
 
 ## Flujo de Git para trabajar en paralelo
@@ -55,8 +56,8 @@ Proyecto de la materia **Programación Orientada a Objetos** (Universidad de La 
 El UML original (HTML de la Entrega 2) tiene vacíos e inconsistencias. **No se parcha**: al terminar todos los RF se hará un **UML nuevo** sacado del código real. Ajustes ya conocidos respecto al original:
 
 - Se agregaron `GestorClientes`, `GestorPuestos`, `GestorSesiones` y el enum `EstadoPuesto` (reemplaza las constantes `String` de estado en `PuestoJuego`).
-- `PuestoJuego` usa atributos `private` y `validar()`; aún no implementa `CalculableCobro` (pendiente RF-05).
-- `SesionJuego` tiene `cliente` y `puesto` (el UML no los tenía); `fin`, `total`, `consumos` y `cargos` llegan en RF-05/RF-07.
+- `PuestoJuego` usa atributos `private` y `validar()`; implementa `CalculableCobro` pero deja `calcularCostoSesion(horas, controles)` a las hijas.
+- `SesionJuego` tiene `cliente` y `puesto` (el UML no los tenía), `fin`, `total`, `finalizar()` y `estaActiva()`; no tiene `iniciar()` (el inicio lo hace el constructor y `GestorSesiones`). `consumos` y `cargos` llegan en RF-07.
 - Se agregó el grupo **Pagos**: interfaz `MetodoPago` (`pagar(monto)`, `obtenerComprobante()`) con `Efectivo`, `TarjetaCredito`, `PagoDigital`; la usará `Venta`. Aún no implementado.
 - Pendientes menores: renombrar `especifiaciones` → `especificaciones` en `EstacionPC`; que el mensaje "id ya repetido" de `GestorPuestos` diga cuál id.
 - Si el compañero se aparta del UML en torneos, anotarlo aquí.

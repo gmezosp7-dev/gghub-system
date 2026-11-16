@@ -2,9 +2,10 @@ package modelos;
 
 
 import enums.EstadoPuesto;
+import interfaces.CalculableCobro;
 import servicios.ValidadorDatos;
 
-public abstract class PuestoJuego {
+public abstract class PuestoJuego implements CalculableCobro {
     //se usa final para en un futuro no se pueda cambiar mediante un [ setid() ]
     private final int  id;
     private String modelo;

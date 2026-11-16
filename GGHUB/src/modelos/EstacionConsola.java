@@ -28,6 +28,10 @@ public class EstacionConsola extends  PuestoJuego {
 
         return  "[Consola] "+super.toString()+  " Tipo de consola: " + getTipoConsola() + " | Tarifa Control Extra: " + getTarifaControlExtra()+ " |";
     }
+    @Override
+     public double calcularCostoSesion (double horasJugadas,int controlesExtra){
+        return getTarifaHora() * horasJugadas + (controlesExtra*getTarifaControlExtra());
+     }
 
     @Override
     public void validar() {

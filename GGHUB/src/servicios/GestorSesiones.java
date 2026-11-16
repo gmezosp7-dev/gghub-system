@@ -1,7 +1,6 @@
 package servicios;
 
 import modelos.Cliente;
-import modelos.EstacionConsola;
 import modelos.SesionJuego;
 import enums.EstadoPuesto;
 import modelos.PuestoJuego;
@@ -41,5 +40,27 @@ public class GestorSesiones {
 
 
 
+    }
+    public SesionJuego buscarSesionActiva(int id){
+        // recorre todas las sesiones buscando la que sigue abierta en esa estacion
+        for (SesionJuego e : sesiones){
+            if (e.estaActiva() && e.getPuesto().getId() == id){
+                return e;
+            }
+        }
+        // no hay ninguna sesion abierta en esa estacion
+        return null;
+    }
+    public SesionJuego finalizarSesion(int id){
+        // se busca UNA sola vez y se guarda en una variable local
+        SesionJuego sesion = buscarSesionActiva(id);
+        if (sesion == null){
+            throw new IllegalArgumentException("No hay una sesion activa en el puesto " + id);
+        }
+        // la sesion calcula su tiempo y le pide al puesto su costo (polimorfismo)
+        sesion.finalizar();
+        // RF-05: al cobrar, la estacion de esa sesion queda libre
+        sesion.getPuesto().cambiarEstado(EstadoPuesto.DISPONIBLE);
+        return sesion;
     }
 }
