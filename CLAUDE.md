@@ -28,7 +28,7 @@ Proyecto de la materia **Programación Orientada a Objetos** (Universidad de La 
 - Strings se comparan con `.equals()`; `int` y enums con `==`.
 - Nada de `if` por tipo de clase (`instanceof`): usar polimorfismo (ej. `validar()` sobreescrito).
 
-## Estado actual (RF-01 a RF-04 terminados y en GitHub)
+## Estado actual (RF-01 a RF-04 en `main`; RF-08 y RF-09 en la rama `torneos`, pendientes de merge)
 
 | RF | Clases | Notas |
 |---|---|---|
@@ -36,6 +36,8 @@ Proyecto de la materia **Programación Orientada a Objetos** (Universidad de La 
 | RF-02 Estaciones | `modelos.PuestoJuego` (abstracta), `EstacionPC`, `EstacionConsola`, `servicios.GestorPuestos` | constructor `protected`; `validar()` polimórfico (la consola valida además `tarifaControlExtra` no negativa); ids compartidos entre PC y consola |
 | RF-03 Estado | `enums.EstadoPuesto` {DISPONIBLE, EN_USO, EN_MANTENIMIENTO} | estado arranca DISPONIBLE; `estaDisponible()`, `cambiarEstado()` (rechaza null); `crearSala()` en Main crea PCs 1-15 y consolas 16-25 |
 | RF-04 Sesiones | `modelos.SesionJuego`, `servicios.GestorSesiones` | sesión con `final` cliente, puesto e inicio (`LocalDateTime.now()`), `controlesExtra` (cantidad). `iniciarSesion(documento, idPuesto, controlesExtra)` valida cliente, puesto, disponibilidad y controles; pone el puesto EN_USO |
+| RF-08 Torneos (rama `torneos`) | `modelos.ModalidadTorneo` (abstracta, `getNombre()` abstracto), `EliminacionDirecta`, `FaseGrupos`, `modelos.Torneo`, `servicios.GestorTorneos` | `nombre` `final` es el identificador; `modalidad` tipada como la clase padre; `inscripcionesAbiertas` arranca `true`. `Torneo.validar()`: nombre no null/vacío, modalidad no null, fecha no null ni anterior a `LocalDateTime.now()` (`isBefore`), cupo ≥ 2, `precioValido(costo)`. `GestorTorneos.buscarPorNombre()` usa `equalsIgnoreCase`; `registrar()` llama `validar()` y rechaza nombres repetidos |
+| RF-09 Inscripciones (rama `torneos`) | `modelos.Inscripcion`, cambios en `Torneo` y `GestorTorneos` | `Inscripcion`: `final` cliente, fecha (`now()`) y `montoPagado` (`double`, copia del costo al inscribirse). `Torneo` tiene `ArrayList<Inscripcion>`, `estaInscrito(documento)`, `cantidadInscritos()`, `estaLleno()`, `inscribir(Cliente)` (valida abiertas, repetido por documento y cupo; luego crea, agrega y devuelve) y `getInscripciones()` (copia). `GestorTorneos` recibe `GestorClientes` por constructor; `inscribirCliente(nombreTorneo, documento)` busca ambos y delega en `torneo.inscribir()` |
 
 `tarifaControlExtra` (precio por control, en `EstacionConsola`) ≠ `controlesExtra` (cantidad, en `SesionJuego`).
 
@@ -47,7 +49,8 @@ Proyecto de la materia **Programación Orientada a Objetos** (Universidad de La 
 ## Flujo de Git para trabajar en paralelo
 
 - Nadie trabaja directo en `main`. El compañero usa su rama (por ejemplo `torneos`), Marco la suya.
-- El compañero crea **clases nuevas**; no edita archivos de Marco. En `Main.java` (archivo compartido) agrega sus pruebas en un método propio, por ejemplo `probarTorneos()`, sin tocar lo demás.
+- El compañero crea **clases nuevas**; no edita archivos de Marco.
+- **El compañero no pone pruebas de torneos en `Main.java`** (el `Main` debe quedar limpio para la entrega). Claude prueba sus clases con un archivo aparte **fuera del repo** (carpeta temporal), compilando contra `GGHUB/src`, y le reporta los resultados en una tabla de casos.
 - Al terminar cada RF, sube su rama; Marco revisa y hace el merge a `main`.
 
 ## UML
@@ -59,4 +62,7 @@ El UML original (HTML de la Entrega 2) tiene vacíos e inconsistencias. **No se 
 - `SesionJuego` tiene `cliente` y `puesto` (el UML no los tenía); `fin`, `total`, `consumos` y `cargos` llegan en RF-05/RF-07.
 - Se agregó el grupo **Pagos**: interfaz `MetodoPago` (`pagar(monto)`, `obtenerComprobante()`) con `Efectivo`, `TarjetaCredito`, `PagoDigital`; la usará `Venta`. Aún no implementado.
 - Pendientes menores: renombrar `especifiaciones` → `especificaciones` en `EstacionPC`; que el mensaje "id ya repetido" de `GestorPuestos` diga cuál id.
-- Si el compañero se aparta del UML en torneos, anotarlo aquí.
+- **Torneos (RF-08):** se agregó `GestorTorneos`; `Torneo.nombre` es el identificador (el UML no le da id); `arbitro` no se implementa (ningún RF lo pide guardar); `ModalidadTorneo` tiene `getNombre()` abstracto (`generarCruces` y `procesarResultado` llegan en RF-10/RF-11).
+- **Torneos (RF-09):** `Inscripcion` tiene `cliente` (el UML no lo tenía) y `montoPagado` en vez de `pagada` + `confirmarPago()` (el cobro se registra al inscribirse; `montoPagado` sirve al cierre de caja RF-12). `posicionFinal` se deja para RF-11. `Torneo` tiene la lista `inscripciones`. No usa `MetodoPago` todavía (es de Marco, aún no existe).
+- **Torneos, vacíos del UML a resolver más adelante:** `Partida` necesita los dos jugadores; `FaseGrupos` usará `ArrayList` en vez de arreglos; falta `cerrarInscripciones()` (RF-10) para probar el bloqueo por inscripciones cerradas.
+- Pendiente menor de torneos: validar que `videojuego` no sea null/vacío en `Torneo.validar()` (recomendado, no exigido por el criterio de aceptación del RF-08).

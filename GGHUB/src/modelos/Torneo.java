@@ -1,6 +1,8 @@
 package modelos;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+
 import servicios.ValidadorDatos;
 
 public class Torneo {
@@ -9,10 +11,11 @@ public class Torneo {
     private LocalDateTime fecha;
     private int cupoMaximo;
     private double costoInscripcion;
-    private ModalidadTorneo modalidad;  //obtiene la modadlidad de la clase padre que proviene de cualquiera de las dos hijas
+    private ModalidadTorneo modalidad;  //tipo de la clase padre para poder guardar cualquiera de las dos modalidades (polimorfismo)
     private boolean inscripcionesAbiertas;
+    private ArrayList<Inscripcion> inscripciones = new ArrayList<>();
 
-    // instancia cada uno de los atributos del cliente
+    //inicializa los atributos del torneo, empieza con inscripciones abiertas y sin inscritos
     public Torneo(String nombre, String videojuego, LocalDateTime fecha, int cupoMaximo, double costoInscripcion, ModalidadTorneo modalidad) {
         this.nombre = nombre;
         this.videojuego = videojuego;
@@ -84,5 +87,46 @@ public class Torneo {
             throw new IllegalArgumentException("Costo de Inscripcion invalido");
         }
     }
-}
 
+    //Compara el documento con los que ya están para evitar repetidos
+    public boolean estaInscrito(String documento){
+        for (Inscripcion i : inscripciones){
+            if (documento.equals(i.getCliente().getDocumento())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int cantidadInscritos(){
+        return inscripciones.size();
+    }
+
+    public boolean estaLleno(){
+        if(inscripciones.size() >= cupoMaximo){
+            return true;
+        }
+        return false;
+    }
+
+    //Antes de realizar una inscripcion revisa si está abierto, si hay cupos y si hay algún error con el documento;
+    //si pasa los if, se inscribe el cliente
+    public Inscripcion inscribir(Cliente cliente){
+        if(!inscripcionesAbiertas){
+            throw new IllegalArgumentException("Las inscripciones del torneo " + getNombre() + " estan cerradas");
+        }
+        if (estaInscrito(cliente.getDocumento())){
+            throw new IllegalArgumentException("El cliente con el documento: " + cliente.getDocumento() + " ya esta inscrito en: " + getNombre());
+        }
+        if (estaLleno()){
+            throw new IllegalArgumentException("El torneo " + getNombre() + " esta lleno, el cupo maximo es de " + getCupoMaximo());
+        }
+        Inscripcion nuevaInscripcion = new Inscripcion(cliente, costoInscripcion);
+        inscripciones.add(nuevaInscripcion);
+        return nuevaInscripcion;
+    }
+
+    public ArrayList<Inscripcion> getInscripciones() {
+        return new ArrayList<>(inscripciones);
+    }
+}
