@@ -143,8 +143,9 @@ public class Main {
         GestorTorneos gestorTorneos = new GestorTorneos(gestorClientes);
         try {
             gestorTorneos.registrar(new Torneo("Copa GG", "FIFA", LocalDateTime.now().plusDays(1), 8, 15000, new EliminacionDirecta()));
-            gestorTorneos.inscribirCliente("Copa GG", "1029");
-            gestorTorneos.inscribirCliente("Copa GG", "10295");
+            // desde el merge con torneos, la inscripcion se cobra con un MetodoPago
+            gestorTorneos.inscribirCliente("Copa GG", "1029", new Efectivo(20000));
+            gestorTorneos.inscribirCliente("Copa GG", "10295", new PagoDigital("Nequi", "3001234567"));
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
