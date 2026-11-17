@@ -67,7 +67,8 @@ public class GestorTorneos {
         return torneo;
     }
 
-    //cerrarInscripciones y generarCruces: buscan el torneo y le delegan la accion; las reglas las valida el Torneo
+    //cerrarInscripciones, generarCruces, registrarResultado y obtenerPosiciones: buscan el torneo
+    //y le delegan la accion; las reglas las valida el Torneo
     public void cerrarInscripciones(String nombreTorneo) {
         Torneo torneo = buscarTorneoExistente(nombreTorneo);
         torneo.cerrarInscripciones();
@@ -78,6 +79,7 @@ public class GestorTorneos {
         return torneo.generarCruces();
     }
 
+    //se encadena sin guardar el torneo en una variable porque solo se usa una vez
     public void registrarResultado(String nombreTorneo, int numeroPartida, String documentoGanador, String marcador){
         buscarTorneoExistente(nombreTorneo).registrarResultado(numeroPartida, documentoGanador, marcador);
     }

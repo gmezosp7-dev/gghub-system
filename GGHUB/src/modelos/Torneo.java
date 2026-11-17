@@ -175,6 +175,7 @@ public class Torneo {
         partidas.addAll(modalidad.procesarResultado(partidas));
     }
 
+    //polimorfismo: eliminacion directa responde con el campeon y fase de grupos con la tabla
     public String obtenerPosiciones(){
         return modalidad.obtenerPosiciones();
     }

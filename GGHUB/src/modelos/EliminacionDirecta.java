@@ -22,9 +22,9 @@ public class EliminacionDirecta extends ModalidadTorneo{
         return emparejar(clientes, 1);
     }
 
-
+    //private: ayudante interno. Lo usan generarCruces (ronda 1) y procesarResultado (rondas siguientes),
+    //asi el codigo de las parejas existe una sola vez
     private ArrayList<Partida> emparejar(ArrayList<Cliente> jugadores, int ronda){
-        //Se reutiliza el for de generarCruces ya que armar la ronda 2 es lo mismo que armar la ronda 1
         ArrayList<Partida> partidas = new ArrayList<>();
         for (int i = 0; i < jugadores.size(); i+=2) {   //Avanza de a dos porque cada partida tiene dos jugadores
             Cliente jugador1 = jugadores.get(i);   //Se saca el primer jugador de la lista
