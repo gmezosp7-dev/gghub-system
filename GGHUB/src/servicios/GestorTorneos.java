@@ -9,7 +9,8 @@ import java.util.ArrayList;
 
 public class GestorTorneos {
     private ArrayList<Torneo> torneos = new ArrayList<>();
-    private GestorClientes gestorClientes;
+    //No cambia ya que al reemplazarlo, el gestor de torneos dejaría de ver los clientes
+    private final GestorClientes gestorClientes;
 
     //recibe el mismo GestorClientes del Main; si se creara con new estaria vacio y no encontraria a nadie
     public GestorTorneos(GestorClientes gestorClientes) {

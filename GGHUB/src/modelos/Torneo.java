@@ -58,23 +58,26 @@ public class Torneo {
 
     @Override
     public String toString() {
-        return "Torneo{" +
-                "nombre='" + nombre + '\'' +
-                ", videojuego='" + videojuego + '\'' +
-                ", fecha=" + fecha +
-                ", cupoMaximo=" + cupoMaximo +
-                ", costoInscripcion=" + costoInscripcion +
-                ", modalidad=" + modalidad.getNombre() +
-                ", inscripcionesAbiertas=" + inscripcionesAbiertas +
-                '}';
+        //el estado se arma aparte para mostrar texto en vez de true/false
+        String estado = "inscripciones cerradas";
+        if (inscripcionesAbiertas) {
+            estado = "inscripciones abiertas";
+        }
+        //cupo muestra cuantos van de cuantos caben; modalidad.getNombre() para no imprimir el objeto
+        return "[TORNEO] " + nombre + " | juego: " + videojuego + " | fecha: " + fecha
+                + " | cupo: " + cantidadInscritos() + "/" + cupoMaximo + " | costo: " + costoInscripcion
+                + " | modalidad: " + modalidad.getNombre() + " | " + estado;
     }
 
     //se aplica encapsulamiento para comprobar si está bien armado el torneo y no sea responsabilidad de otra clase
 
     public void validar() {
-        //final no impide que el nombre llegue null o vacio; primero null para no hacer null.isBlank()
-        if (nombre == null || nombre.isBlank()) {
+        //final no impide que el nombre llegue null o vacio; textoValido (de ValidadorDatos) revisa las dos cosas
+        if (!ValidadorDatos.textoValido(nombre)) {
             throw new IllegalArgumentException("El torneo debe tener un nombre");
+        }
+        if (!ValidadorDatos.textoValido(videojuego)){
+            throw new IllegalArgumentException("El torneo debe tener un videojuego");
         }
         if (modalidad == null) {
             throw new IllegalArgumentException("El torneo debe tener una modalidad");

@@ -30,10 +30,7 @@ public class Inscripcion {
 
     @Override
     public String toString() {
-        return "Inscripcion{" +
-                "cliente=" + cliente.getNombre() +
-                ", fecha=" + fecha +
-                ", montoPagado=" + montoPagado +
-                '}';
+        //getNombre() para no imprimir el cliente completo (documento, telefono, correo)
+        return "[INSCRIPCION] | CLIENTE: " + cliente.getNombre() + " | Fecha: " + fecha + " | Pagado: " + montoPagado;
     }
 }
