@@ -54,30 +54,30 @@ Proyecto de la materia **Programación Orientada a Objetos** (Universidad de La 
 
 ## Lo que falta y quién lo hace
 
-Torneos (RF-08 a RF-11) ya están terminados y unidos en `main`. Lo que queda se reparte en 3 fases:
+**Marco terminó su parte** (RF-01 a RF-07, RF-12, pagos e integración). **Todo lo que falta lo hace el compañero (Tomas)**, y ahora puede modificar **cualquier archivo**, incluidos los de Marco. Ya está hecho y unido en `main`: RF-08 a RF-11, cobro de inscripción con `MetodoPago`, `IRepository`, `FileManage` (crea `src/files/` si no existe) y `ui/MenuTorneos`.
 
-**Fase 1 (en paralelo, ahora)**
-- **Marco:** ~~RF-12 cierre de caja~~ (terminado). Sus arreglos medios: nombre vacío en `Cliente`, id ≤ 0 en estaciones, mensajes ("id ya repetido" sin el id, reabastecer 0 dice "negativo"), `especifiaciones` → `especificaciones`.
-- **Compañero (rama `torneos`, primero `git merge origin/main`):**
-  1. ✅ (hecho) Arreglos de torneos: `Torneo.validar()` rechaza `videojuego` vacío (`ValidadorDatos.textoValido`); `final` en `gestorClientes` de `GestorTorneos`; `toString()` de `Torneo` e `Inscripcion` con el estilo del proyecto (`[TORNEO] nombre | ...`).
-  2. ✅ (hecho) Cobrar la inscripción con `MetodoPago` (RF-09 "registrando el cobro"): `inscribirCliente` recibe un `MetodoPago` y llama `metodo.pagar(costo)` **antes** de inscribir (si falla, no se inscribe). **No cambiar `Inscripcion.getMontoPagado()`**: lo usa el cierre de caja.
-  3. ✅ (hecho) Base de la persistencia (RNF-01): `persistencia/FileManage.java` e `interfaces/IRepository.java`, como en el repo del profe. Separador `|`, carpeta `files/`, un `.txt` por entidad. Copiadas tal cual del profe, sin agregados. Los archivos van en `GGHUB/src/files/` (esa carpeta tiene que existir).
+Pendiente, en este orden recomendado:
 
-**Fase 2 (después de unir la fase 1)**
-- **Marco:** repositorios de sus clases (clientes, puestos, sesiones, productos, ventas). Necesitan un segundo constructor para cargar desde archivo en `SesionJuego`, `PuestoJuego`, `Venta` e `ItemConsumo` (hoy ponen `now()`, `DISPONIBLE` o copian el precio actual).
-- **Compañero:** repositorios de torneos e inscripciones, con un segundo constructor en `Torneo` para cargar torneos con fecha pasada.
+1. **Arreglos medios** (cortos):
+   - `GestorClientes.registrar` rechaza nombre vacío (`ValidadorDatos.textoValido`).
+   - `GestorPuestos.registrar` (o `PuestoJuego.validar`) rechaza id ≤ 0.
+   - Mensajes: "id ya repetido" debe decir cuál id; `Producto.agregarStock(0)` dice "no puede ser negativo" pero la regla es "mayor a cero".
+   - Renombrar `especifiaciones` → `especificaciones` en `EstacionPC` (Refactor → Rename).
+2. **RNF-01: repositorios** (en `repositorios`, uno por entidad, implementando `IRepository<T>` y usando `FileManage`, como `EstudianteRepository` del profe). Separador `|`, un `.txt` por entidad:
+   - Clientes, puestos (guardar el tipo PC/consola y el estado), productos, sesiones (con sus consumos), ventas (con sus items), torneos e inscripciones.
+   - **Segundos constructores para cargar desde archivo** (sobrecarga): hoy varias clases ponen valores "de ahora" en el constructor y al cargar se perderían los guardados. Hace falta uno que reciba el valor guardado en: `SesionJuego` (`inicio`, `fin`, totales), `PuestoJuego` (`estado`), `Venta` (`fechaHora`, `confirmada`), `ItemConsumo` (`precioUnitario`), `Inscripcion` (`fecha`), `CierreCaja` (`fecha`) y `Torneo` (sin rechazar fechas pasadas).
+   - Los objetos que guardan otro objeto (sesión → cliente y puesto; inscripción → cliente) se guardan por su identificador (documento, id) y al cargar se buscan en el gestor correspondiente.
+3. **Menú de consola** en `ui`, con el mismo estilo de `MenuTorneos`: `MenuPrincipal`, `MenuClientes`, `MenuPuestos` (registrar, ver estado, mantenimiento), `MenuSesiones` (iniciar / finalizar con método de pago), `MenuBarra` (productos y ventas), `MenuCaja` (cierre). Los menús **no tienen reglas de negocio**: piden datos, llaman al gestor y muestran el mensaje del `IllegalArgumentException`.
+4. **`Main`**: las pruebas actuales se mueven a una clase de demostración en `ui` (por ejemplo `ui/Demo.java`, como `DemoAlmacenamiento` del profe) y el `Main` solo arranca `MenuPrincipal`.
+5. **Al final:** actualizar el README (RNF-01 en "Terminado", comando de compilar si cambian los paquetes) y avisarle a Marco para generar el UML nuevo a partir del código.
 
-**Fase 3 (juntos, al final)**
-- Menú de consola en `ui` (`MenuPrincipal`, `MenuClientes`, `MenuPuestos`, ...): el compañero hace `MenuTorneos`, Marco el resto. Las pruebas actuales salen del `Main` a una clase de demostración (como `DemoAlmacenamiento` del profe) y el `Main` solo arranca el menú.
-- README (matriz en "Terminado") y UML nuevo sacado del código.
-- Ensayo de sustentación: cada uno debe poder explicar la parte del otro.
+## Flujo de Git
 
-## Flujo de Git para trabajar en paralelo
-
-- Nadie trabaja directo en `main`. El compañero usa su rama (por ejemplo `torneos`), Marco la suya.
-- El compañero crea **clases nuevas**; no edita archivos de Marco.
-- **El compañero no pone pruebas de torneos en `Main.java`** (el `Main` debe quedar limpio para la entrega). Claude prueba sus clases con un archivo aparte **fuera del repo** (carpeta temporal), compilando contra `GGHUB/src`, y le reporta los resultados en una tabla de casos.
-- Al terminar cada RF, sube su rama; Marco revisa y hace el merge a `main`.
+- El compañero **trabaja directo en `main`** (Marco ya no sube cambios, así que no hay choques).
+- Siempre `git pull` antes de empezar y antes de `git push`.
+- **Compilar antes de subir**: si no compila, no se sube.
+- Commits pequeños, uno por tarea, con mensaje claro. Sin líneas de co-autoría de Claude.
+- Claude prueba con archivos aparte **fuera del repo** (carpeta temporal), compilando contra `GGHUB/src`, y reporta los resultados en una tabla de casos.
 
 ## UML
 
@@ -90,9 +90,7 @@ El UML original (HTML de la Entrega 2) tiene vacíos e inconsistencias. **No se 
 - `TipoVenta` es enum (el UML tenía constantes `String` `CONTADO`/`CARGO_SESION` en `Venta`). `Venta` e `InventarioBarra` usan `ArrayList`, no arreglos. `Producto` tiene `descontarStock`/`agregarStock` en vez de `actualizarStock`. `ItemConsumo` guarda `precioUnitario`.
 - Pendientes menores: renombrar `especifiaciones` → `especificaciones` en `EstacionPC`; que el mensaje "id ya repetido" de `GestorPuestos` diga cuál id.
 - **Torneos (RF-08):** se agregó `GestorTorneos`; `Torneo.nombre` es el identificador (el UML no le da id); `arbitro` no se implementa (ningún RF lo pide guardar); `ModalidadTorneo` tiene `getNombre()` abstracto (`generarCruces` y `procesarResultado` llegan en RF-10/RF-11).
-- **Torneos (RF-09):** `Inscripcion` tiene `cliente` (el UML no lo tenía) y `montoPagado` en vez de `pagada` + `confirmarPago()` (el cobro se registra al inscribirse; `montoPagado` sirve al cierre de caja RF-12). `posicionFinal` se deja para RF-11. `Torneo` tiene la lista `inscripciones`. No usa `MetodoPago` todavía (es de Marco, aún no existe).
+- **Torneos (RF-09):** `Inscripcion` tiene `cliente` (el UML no lo tenía) y `montoPagado` en vez de `pagada` + `confirmarPago()` (el cobro se registra al inscribirse; `montoPagado` sirve al cierre de caja RF-12). `posicionFinal` se deja para RF-11. `Torneo` tiene la lista `inscripciones`. La inscripción se cobra con `MetodoPago` (`inscribirCliente(nombre, documento, metodo)`) y guarda el `metodoPago`.
 - **Torneos (RF-10):** `generarCruces` devuelve `ArrayList<Partida>` (no `Partida[]`) y recibe las inscripciones; `Partida` tiene `jugador1` y `jugador2` (el UML no los tenía) y representa el pase directo con `jugador2 == null`. Decisión de diseño: fase de grupos = un solo grupo todos contra todos (no varios grupos + eliminatoria). `marcador` / `registrarMarcador()` llegan en RF-11.
 - **Torneos (RF-11):** `procesarResultado` recibe todas las partidas (no una sola `p`) y devuelve las partidas nuevas; se agregó `obtenerPosiciones()` abstracto. `FaseGrupos` usa `ArrayList<PosicionGrupo>` en vez de `participantes[]` + `puntos[]`, y `actualizarTabla()` es el recálculo dentro de `procesarResultado`. `Partida.registrarMarcador()` del UML es `registrarResultado(documento, marcador)`; `obtenerGanador()` es `getGanador()`. `Inscripcion.posicionFinal` no se implementó (la posición sale de `obtenerPosiciones()`). Decisiones: sin empates, 3 puntos por victoria, el árbitro identifica la partida por su número (desde 1).
-- **Pendiente tras el merge:** usar `ValidadorDatos.textoValido()` en `Torneo.validar()` para el nombre y para el `videojuego` (todavía sin validar).
 - **RF-12 (decisión):** el operador del cierre de caja es solo su nombre (`String`). No se implementan `UsuarioSistema`, `Operador`, `AdministradorSala` ni `Arbitro` → quitarlos del UML nuevo.
-- Pendiente menor de torneos: validar que `videojuego` no sea null/vacío en `Torneo.validar()` (recomendado, no exigido por el criterio de aceptación del RF-08).
