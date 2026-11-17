@@ -78,4 +78,12 @@ public class GestorTorneos {
         return torneo.generarCruces();
     }
 
+    public void registrarResultado(String nombreTorneo, int numeroPartida, String documentoGanador, String marcador){
+        buscarTorneoExistente(nombreTorneo).registrarResultado(numeroPartida, documentoGanador, marcador);
+    }
+
+    public String obtenerPosiciones(String nombreTorneo){
+         return buscarTorneoExistente(nombreTorneo).obtenerPosiciones();
+    }
+
 }

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import servicios.ValidadorDatos;
 
+//Polimorfismo: Torneo no le pide nada a modalidad, le dice lo mismo a las dos y cada una reacciona como debe
 public class Torneo {
     private final String nombre;        //final porque es la identificación del torneo, no cambia
     private String videojuego;
@@ -158,6 +159,24 @@ public class Torneo {
 
     public ArrayList<Partida> getPartidas() {
         return new ArrayList<>(partidas);
+    }
+
+    public void registrarResultado(int numeroPartida, String documentoGanador, String marcador){
+        if (partidas.isEmpty()){
+            throw new IllegalArgumentException("Todavia no se generaron los cruces del torneo: " + nombre);
+        }
+        if (numeroPartida < 1 || numeroPartida > partidas.size()){
+            throw new IllegalArgumentException("No existe la partida numero: " + numeroPartida + ", el torneo tiene: " + partidas.size());
+        }
+        Partida partida = partidas.get(numeroPartida - 1);    //-1 porque el arbitro cuenta desde 1 y la lista desde 0
+        partida.registrarResultado(documentoGanador, marcador);
+        //Polimorfismo: addAll agrega todos los elementos de una lista a otra. En eliminación directa pueden ser las
+        //partidas de la ronda siguiente, y en grupos siempre es una lista vacía, así que no agrega nada.
+        partidas.addAll(modalidad.procesarResultado(partidas));
+    }
+
+    public String obtenerPosiciones(){
+        return modalidad.obtenerPosiciones();
     }
 
 }
