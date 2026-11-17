@@ -16,6 +16,13 @@ public class ItemConsumo {
         this.precioUnitario = producto.getPrecioVenta();
     }
 
+    //Sobrecarga para cargar desde el archivo: recibe el precio que se guardo, no el de hoy
+    public ItemConsumo(Producto producto, int cantidad, double precioUnitario) {
+        this.producto = producto;
+        this.cantidad = cantidad;
+        this.precioUnitario = precioUnitario;
+    }
+
     public Producto getProducto() {
         return producto;
     }

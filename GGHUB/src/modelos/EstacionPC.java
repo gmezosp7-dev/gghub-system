@@ -20,6 +20,11 @@ public class EstacionPC extends PuestoJuego {
     public double calcularCostoSesion (double horasJugadas,int controlesExtra){
         return getTarifaHora() * horasJugadas ;
     }
+    //Linea para puestos.txt: PC|id|modelo|tarifa|estado|especificaciones
+    @Override
+    public String aLinea(){
+        return "PC|" + getId() + "|" + getModelo() + "|" + getTarifaHora() + "|" + getEstado() + "|" + especifiaciones;
+    }
 
 
 

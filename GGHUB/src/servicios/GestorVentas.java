@@ -52,6 +52,11 @@ public class GestorVentas {
     public void confirmar(Venta venta){
         confirmar(venta, null);
     }
+    //Al cargar desde el archivo: agrega una venta que ya se habia confirmado (no vuelve a cobrar ni descontar stock)
+    public void cargar(Venta venta){
+        ventas.add(venta);
+    }
+
     public ArrayList<Venta> listar(){
         return new ArrayList<>(ventas);
     }

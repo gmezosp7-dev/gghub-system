@@ -26,6 +26,16 @@ public class Venta {
         this.fechaHora = LocalDateTime.now();
     }
 
+    //Sobrecarga para cargar desde el archivo: recibe la fecha y los productos que se guardaron
+    //(solo se guardan ventas confirmadas, por eso queda confirmada)
+    public Venta(TipoVenta tipo, SesionJuego sesion, LocalDateTime fechaHora, ArrayList<ItemConsumo> items) {
+        this.tipo = tipo;
+        this.sesion = sesion;
+        this.fechaHora = fechaHora;
+        this.items = new ArrayList<>(items);
+        this.confirmada = true;
+    }
+
     public LocalDateTime getFechaHora() {
         return fechaHora;
     }

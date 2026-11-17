@@ -20,6 +20,15 @@ public class Partida {
         }
     }
 
+    //Sobrecarga para cargar desde el archivo: recibe el ganador y el marcador que se guardaron
+    public Partida(int ronda, Cliente jugador1, Cliente jugador2, Cliente ganador, String marcador) {
+        this.ronda = ronda;
+        this.jugador1 = jugador1;
+        this.jugador2 = jugador2;
+        this.ganador = ganador;
+        this.marcador = marcador;
+    }
+
     public int getRonda() {
         return ronda;
     }

@@ -21,6 +21,15 @@ public class Inscripcion {
         this.metodoPago = metodoPago;
     }
 
+    //Sobrecarga para cargar desde el archivo: recibe la fecha que se guardo.
+    //El metodo de pago no se guarda en el archivo, por eso queda null
+    public Inscripcion(Cliente cliente, double montoPagado, LocalDateTime fecha) {
+        this.cliente = cliente;
+        this.fecha = fecha;
+        this.montoPagado = montoPagado;
+        this.metodoPago = null;
+    }
+
     public Cliente getCliente() {
         return cliente;
     }
@@ -40,6 +49,11 @@ public class Inscripcion {
     @Override
     public String toString() {
         //getNombre() para no imprimir el cliente completo (documento, telefono, correo)
-        return "[INSCRIPCION] | CLIENTE: " + cliente.getNombre() + " | Fecha: " + fecha + " | Pagado: " + montoPagado + " | " + metodoPago.obtenerComprobante();
+        String texto = "[INSCRIPCION] | CLIENTE: " + cliente.getNombre() + " | Fecha: " + fecha + " | Pagado: " + montoPagado;
+        //las cargadas del archivo no tienen metodo de pago, asi no se cae con null
+        if (metodoPago != null) {
+            texto = texto + " | " + metodoPago.obtenerComprobante();
+        }
+        return texto;
     }
 }

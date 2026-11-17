@@ -32,6 +32,12 @@ public class EstacionConsola extends  PuestoJuego {
      public double calcularCostoSesion (double horasJugadas,int controlesExtra){
         return getTarifaHora() * horasJugadas + (controlesExtra*getTarifaControlExtra());
      }
+    //Linea para puestos.txt: CONSOLA|id|modelo|tarifa|estado|tipoConsola|tarifaControlExtra
+    @Override
+    public String aLinea(){
+        return "CONSOLA|" + getId() + "|" + getModelo() + "|" + getTarifaHora() + "|" + getEstado() + "|"
+                + tipoConsola + "|" + tarifaControlExtra;
+    }
 
     @Override
     public void validar() {

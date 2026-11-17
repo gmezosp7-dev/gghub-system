@@ -29,6 +29,26 @@ public class Torneo {
         this.inscripcionesAbiertas = true;
     }
 
+    //Sobrecarga para cargar desde el archivo: recibe si las inscripciones estaban abiertas.
+    //No se valida la fecha porque un torneo guardado puede ya haber pasado
+    public Torneo(String nombre, String videojuego, LocalDateTime fecha, int cupoMaximo, double costoInscripcion,
+                  ModalidadTorneo modalidad, boolean inscripcionesAbiertas) {
+        this(nombre, videojuego, fecha, cupoMaximo, costoInscripcion, modalidad);
+        this.inscripcionesAbiertas = inscripcionesAbiertas;
+    }
+
+    //Al cargar desde el archivo: agrega una inscripcion que ya se habia pagado (no vuelve a cobrar)
+    public void cargarInscripcion(Inscripcion inscripcion) {
+        inscripciones.add(inscripcion);
+    }
+
+    //Al cargar desde el archivo: agrega las partidas guardadas y la modalidad recalcula
+    //la tabla de grupos o el campeon con los resultados que ya habia
+    public void cargarPartidas(ArrayList<Partida> partidasGuardadas) {
+        partidas.addAll(partidasGuardadas);
+        partidas.addAll(modalidad.procesarResultado(getPartidas()));
+    }
+
     public String getNombre() {
         return nombre;
     }

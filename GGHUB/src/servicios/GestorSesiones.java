@@ -70,6 +70,11 @@ public class GestorSesiones {
     }
 
     // copia de todas las sesiones (abiertas y cerradas); la usa el cierre de caja (RF-12)
+    //Al cargar desde el archivo: agrega una sesion que ya existia, sin volver a validarla
+    public void cargar(SesionJuego sesion){
+        sesiones.add(sesion);
+    }
+
     public ArrayList<SesionJuego> listar(){
         return new ArrayList<>(sesiones);
     }

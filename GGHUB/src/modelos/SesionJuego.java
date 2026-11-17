@@ -30,6 +30,20 @@ public class SesionJuego {
         this.puesto= puesto;
         this.controlesExtra=controlesExtra;
     }
+    //Sobrecarga para cargar desde el archivo: recibe lo que se guardo (inicio, fin, totales y consumos)
+    //en vez de poner la hora de ahora. Si fin es null, la sesion sigue abierta
+    public SesionJuego(Cliente cliente, PuestoJuego puesto, int controlesExtra, LocalDateTime inicio, LocalDateTime fin,
+                       double total, double costoTiempo, double costoControles, ArrayList<ItemConsumo> consumos){
+        this.cliente = cliente;
+        this.puesto = puesto;
+        this.controlesExtra = controlesExtra;
+        this.inicio = inicio;
+        this.fin = fin;
+        this.total = total;
+        this.costoTiempo = costoTiempo;
+        this.costoControles = costoControles;
+        this.consumos = new ArrayList<>(consumos);
+    }
     public LocalDateTime getInicio(){
         return inicio;
     }

@@ -42,6 +42,11 @@ public class GestorTorneos {
     }
 
     //devuelve una copia para que nadie pueda modificar la lista original
+    //Al cargar desde el archivo: agrega un torneo guardado sin validar la fecha (puede que ya haya pasado)
+    public void cargar(Torneo torneo) {
+        torneos.add(torneo);
+    }
+
     public ArrayList<Torneo> listar() {
         return new ArrayList<>(torneos);
     }

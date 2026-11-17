@@ -39,6 +39,9 @@ public abstract class PuestoJuego implements CalculableCobro {
     public String toString(){
         return "id: [" +getId()+ "] | " + "modelo: "+ getModelo() +" | tarifa/h: " + getTarifaHora() + " | " + " Estado: " + getEstado() +" |";
     }
+    //Como el aLinea() del profe: cada estacion arma su linea para el archivo (polimorfismo, sin instanceof)
+    public abstract String aLinea();
+
     public void validar (){
         if(!ValidadorDatos.precioValido(tarifaHora)){
             throw new IllegalArgumentException(("tarifa invalida"));
