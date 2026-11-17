@@ -52,8 +52,23 @@ Proyecto de la materia **Programación Orientada a Objetos** (Universidad de La 
 
 ## Lo que falta y quién lo hace
 
-- **Marco (dueño del repo, integración):** RF-12 cierre de caja, RNF-01 persistencia en `.txt` (repositorios de sus clases; varias necesitan un segundo constructor para cargar desde archivo: `SesionJuego`, `PuestoJuego`, `Venta`, `ItemConsumo`).
-- **Compañero:** **torneos, RF-08 a RF-11** — `Torneo`, `Inscripcion`, `ModalidadTorneo` (abstracta) con `EliminacionDirecta` y `FaseGrupos`, `Partida`, y un `GestorTorneos`. Solo depende de `Cliente`/`GestorClientes` (no modificarlos sin avisar a Marco).
+Torneos (RF-08 a RF-11) ya están terminados y unidos en `main`. Lo que queda se reparte en 3 fases:
+
+**Fase 1 (en paralelo, ahora)**
+- **Marco:** RF-12 cierre de caja (`CierreCaja` en `modelos` + un gestor en `servicios`; separa tiempo, controles, barra y torneos sin contar dos veces los consumos cargados a sesión). Sus arreglos medios: nombre vacío en `Cliente`, id ≤ 0 en estaciones, mensajes ("id ya repetido" sin el id, reabastecer 0 dice "negativo"), `especifiaciones` → `especificaciones`.
+- **Compañero (rama `torneos`, primero `git merge origin/main`):**
+  1. Arreglos de torneos: `Torneo.validar()` rechaza `videojuego` vacío (`ValidadorDatos.textoValido`); `final` en `gestorClientes` de `GestorTorneos`; `toString()` de `Torneo` e `Inscripcion` con el estilo del proyecto (`[TORNEO] nombre | ...`).
+  2. Cobrar la inscripción con `MetodoPago` (RF-09 "registrando el cobro"): `inscribirCliente` recibe un `MetodoPago` y llama `metodo.pagar(costo)` **antes** de inscribir (si falla, no se inscribe). **No cambiar `Inscripcion.getMontoPagado()`**: lo usa el cierre de caja.
+  3. Base de la persistencia (RNF-01): `persistencia/FileManage.java` e `interfaces/IRepository.java`, como en el repo del profe. Separador `|`, carpeta `files/`, un `.txt` por entidad.
+
+**Fase 2 (después de unir la fase 1)**
+- **Marco:** repositorios de sus clases (clientes, puestos, sesiones, productos, ventas). Necesitan un segundo constructor para cargar desde archivo en `SesionJuego`, `PuestoJuego`, `Venta` e `ItemConsumo` (hoy ponen `now()`, `DISPONIBLE` o copian el precio actual).
+- **Compañero:** repositorios de torneos e inscripciones, con un segundo constructor en `Torneo` para cargar torneos con fecha pasada.
+
+**Fase 3 (juntos, al final)**
+- Menú de consola en `ui` (`MenuPrincipal`, `MenuClientes`, `MenuPuestos`, ...): el compañero hace `MenuTorneos`, Marco el resto. Las pruebas actuales salen del `Main` a una clase de demostración (como `DemoAlmacenamiento` del profe) y el `Main` solo arranca el menú.
+- README (matriz en "Terminado") y UML nuevo sacado del código.
+- Ensayo de sustentación: cada uno debe poder explicar la parte del otro.
 
 ## Flujo de Git para trabajar en paralelo
 
