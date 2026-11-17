@@ -59,7 +59,7 @@ Torneos (RF-08 a RF-11) ya están terminados y unidos en `main`. Lo que queda se
 - **Compañero (rama `torneos`, primero `git merge origin/main`):**
   1. ✅ (hecho) Arreglos de torneos: `Torneo.validar()` rechaza `videojuego` vacío (`ValidadorDatos.textoValido`); `final` en `gestorClientes` de `GestorTorneos`; `toString()` de `Torneo` e `Inscripcion` con el estilo del proyecto (`[TORNEO] nombre | ...`).
   2. ✅ (hecho) Cobrar la inscripción con `MetodoPago` (RF-09 "registrando el cobro"): `inscribirCliente` recibe un `MetodoPago` y llama `metodo.pagar(costo)` **antes** de inscribir (si falla, no se inscribe). **No cambiar `Inscripcion.getMontoPagado()`**: lo usa el cierre de caja.
-  3. Base de la persistencia (RNF-01): `persistencia/FileManage.java` e `interfaces/IRepository.java`, como en el repo del profe. Separador `|`, carpeta `files/`, un `.txt` por entidad.
+  3. ✅ (hecho) Base de la persistencia (RNF-01): `persistencia/FileManage.java` e `interfaces/IRepository.java`, como en el repo del profe. Separador `|`, carpeta `files/`, un `.txt` por entidad. Copiadas tal cual del profe, sin agregados. Los archivos van en `GGHUB/src/files/` (esa carpeta tiene que existir).
 
 **Fase 2 (después de unir la fase 1)**
 - **Marco:** repositorios de sus clases (clientes, puestos, sesiones, productos, ventas). Necesitan un segundo constructor para cargar desde archivo en `SesionJuego`, `PuestoJuego`, `Venta` e `ItemConsumo` (hoy ponen `now()`, `DISPONIBLE` o copian el precio actual).
