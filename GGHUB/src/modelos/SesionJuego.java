@@ -21,6 +21,8 @@ public class SesionJuego {
     private ArrayList<ItemConsumo> consumos = new ArrayList<>();
     // como se pago la cuenta; null mientras la sesion siga abierta
     private MetodoPago metodoPago;
+    private double costoTiempo;
+    private double costoControles;
 
     public SesionJuego (Cliente cliente, PuestoJuego puesto,  int controlesExtra){
         this.inicio = LocalDateTime.now();
@@ -51,6 +53,13 @@ public class SesionJuego {
     public double getTotal() {
         return total;
     }
+    public double getCostoTiempo(){
+        return costoTiempo;
+    }
+
+    public double getCostoControles() {
+        return costoControles;
+    }
 
     public MetodoPago getMetodoPago() {
         return metodoPago;
@@ -68,9 +77,9 @@ public class SesionJuego {
     }
     //finalizacion de sesion
 
-    // RF-05: "al procesar el pago libera la estacion".
-    // Primero se calcula y se cobra; solo si el pago sale bien se cierra la sesion.
-    // Si el pago falla, la sesion sigue abierta: el cliente no se va sin pagar.
+
+    // Primero se calcula y se cobra; solo si el pago sale bien se cierra la sesion
+    // Si el pago falla, la sesion sigue abierta: el cliente no se va sin pagar
     public double finalizar(MetodoPago metodo){
         if(fin != null){
             throw new IllegalArgumentException("la sesión ya fue finalizada");
@@ -82,12 +91,16 @@ public class SesionJuego {
         LocalDateTime ahora = LocalDateTime.now();
         long minutos = Duration.between(inicio, ahora).toMinutes();
         double horas = minutos / 60.0;
-        double totalCalculado = puesto.calcularCostoSesion(horas,controlesExtra) + totalConsumos();
-        // se cobra (polimorfismo: Efectivo, Tarjeta o PagoDigital). Si falla, lanza y nada cambio
+        double tiempoCalculado = puesto.calcularCostoSesion(horas,0);
+        double controlesCalculado = puesto.calcularCostoSesion(horas, controlesExtra) - tiempoCalculado;
+        double totalCalculado = tiempoCalculado+ totalConsumos()+ controlesCalculado;
+        // se cobra  Si falla, lanza y nada cambio
         metodo.pagar(totalCalculado);
         // el pago salio bien: ahora si se cierra la sesion
         fin = ahora;
         total = totalCalculado;
+        costoTiempo = tiempoCalculado;
+        costoControles = controlesCalculado;
         metodoPago = metodo;
         // RF-05: al procesar el pago se libera la estacion. Lo hace la propia sesion (no el gestor)
         // para que la estacion quede libre por CUALQUIER camino que se finalice; si no, podria quedar
@@ -111,6 +124,9 @@ public class SesionJuego {
 
         }
         return suma;
+    }
+    public ArrayList<ItemConsumo>listar(){
+        return new ArrayList<>(consumos);
     }
 
 }

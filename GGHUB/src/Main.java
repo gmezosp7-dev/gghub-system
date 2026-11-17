@@ -5,6 +5,9 @@ import servicios.GestorPuestos;
 import servicios.GestorSesiones;
 import servicios.InventarioBarra;
 import servicios.GestorVentas;
+import servicios.GestorTorneos;
+import servicios.GestorCaja;
+import java.time.LocalDateTime;
 
 //TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
@@ -133,6 +136,28 @@ public class Main {
         intentarNuevaVentaCargo(gestorVentas, 5);                        // 15. la 5 ya se cerro: no se le carga nada mas
         mostrarVentas(gestorVentas);
         mostrarInventario(inventario);                                   // Coca 17, Papas 12, Chocolatina 11
+
+        // Pruebas RF-12: cierre de caja del dia
+        System.out.println("\n=== RF-12: cierre de caja ===");
+        // un torneo con 2 inscritos (lo minimo para que el cierre tenga dinero de torneos)
+        GestorTorneos gestorTorneos = new GestorTorneos(gestorClientes);
+        try {
+            gestorTorneos.registrar(new Torneo("Copa GG", "FIFA", LocalDateTime.now().plusDays(1), 8, 15000, new EliminacionDirecta()));
+            gestorTorneos.inscribirCliente("Copa GG", "1029");
+            gestorTorneos.inscribirCliente("Copa GG", "10295");
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+        // una sesion ABIERTA: no debe contar en el cierre porque todavia no se ha pagado
+        intentarIniciarSesion(gestorSesiones, "10295", 20, 0);
+
+        GestorCaja gestorCaja = new GestorCaja(gestorSesiones, gestorVentas, gestorTorneos);
+        intentarCerrarCaja(gestorCaja, "Marco");   // 1. cierre valido
+        intentarCerrarCaja(gestorCaja, "   ");     // 2. operador vacio
+        // Lo que debe salir (las sesiones del Main duran 0 minutos, por eso juego = $0):
+        //   juego $0 | controles $2 (la consola 16) | barra: contado 10500 + 5000 + 4000 y la chocolatina
+        //   cargada 1800 (contada UNA sola vez) = $21300 | torneos 2 x 15000 = $30000
+        //   sesiones 3 (la 1, la 16 y la 5; la 20 sigue abierta) | ventas de contado 3 | inscripciones 2
 
 
 
@@ -286,6 +311,14 @@ public class Main {
         try {
             gestorVentas.confirmar(venta);
             System.out.println("Venta confirmada: " + venta);
+        }
+        catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+    private static void intentarCerrarCaja(GestorCaja gestorCaja, String operador) {
+        try {
+            System.out.println(gestorCaja.cerrarCaja(operador));
         }
         catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());

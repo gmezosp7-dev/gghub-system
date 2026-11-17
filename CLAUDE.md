@@ -31,7 +31,7 @@ Proyecto de la materia **Programación Orientada a Objetos** (Universidad de La 
 - Strings se comparan con `.equals()`; `int` y enums con `==`.
 - Nada de `if` por tipo de clase (`instanceof`): usar polimorfismo (ej. `validar()` sobreescrito).
 
-## Estado actual (RF-01 a RF-11 terminados y unidos en `main`, con pagos; falta RF-12 y RNF-01)
+## Estado actual (RF-01 a RF-12 terminados en `main`, con pagos; falta RNF-01, menú `ui`, README y UML)
 
 | RF | Clases | Notas |
 |---|---|---|
@@ -48,6 +48,8 @@ Proyecto de la materia **Programación Orientada a Objetos** (Universidad de La 
 | RF-10 Cruces | `modelos.Partida`, `generarCruces(ArrayList<Inscripcion>)` abstracto en `ModalidadTorneo`, cambios en `Torneo` y `GestorTorneos` | `Partida`: `final` ronda, jugador1, jugador2; `ganador` sin final; si `jugador2 == null` es pase directo y el ganador es jugador1; `esPaseDirecto()`, `estaJugada()`. `EliminacionDirecta`: parejas consecutivas (`i += 2`), el impar pasa directo. `FaseGrupos`: todos contra todos en un solo grupo (`j = i + 1`, n·(n−1)/2 partidas). `Torneo.cerrarInscripciones()` (exige ≥ 2 inscritos, solo cierra, no hay setter) y `generarCruces()` (exige inscripciones cerradas, no permite generar dos veces, `partidas = modalidad.generarCruces(...)` sin if por tipo). `GestorTorneos`: ayudante `private buscarTorneoExistente()` (lanza error si no existe), `cerrarInscripciones(nombre)`, `generarCruces(nombre)` |
 | RF-11 Resultados | `modelos.PosicionGrupo`, `procesarResultado(ArrayList<Partida>)` y `obtenerPosiciones()` abstractos en `ModalidadTorneo`, cambios en `Partida`, `EliminacionDirecta`, `FaseGrupos`, `Torneo`, `GestorTorneos` | `Partida.registrarResultado(documentoGanador, marcador)`: rechaza pase directo, partida ya jugada, marcador vacío y ganador que no juega (compara con `equals`); sin empates; `marcador` es `String`. `EliminacionDirecta`: ayudante `private emparejar(jugadores, ronda)` (lo usan `generarCruces` y `procesarResultado`); la ronda actual es la de la última partida; cuando toda la ronda tiene ganador arma la siguiente, y si queda uno lo guarda en `campeon`. `FaseGrupos`: `tabla` de `PosicionGrupo` recalculada desde cero en cada `procesarResultado` (nunca suma dos veces), `obtenerPosiciones()` ordena por puntos con `sort`. `PosicionGrupo`: `final` cliente, `victorias`, `PUNTOS_POR_VICTORIA = 3`, `sumarVictorias()` sin setter, `getPuntos()` calculado. `Torneo.registrarResultado(numeroPartida, documento, marcador)` (número desde 1) y `partidas.addAll(modalidad.procesarResultado(partidas))`; `obtenerPosiciones()` delega. `GestorTorneos.registrarResultado(nombre, ...)` y `obtenerPosiciones(nombre)` |
 
+| RF-12 Cierre de caja | `modelos.CierreCaja`, `servicios.GestorCaja`; `SesionJuego.costoTiempo` / `costoControles`; `GestorSesiones.listar()` | `SesionJuego.finalizar` separa el cobro: tiempo = `calcularCostoSesion(horas, 0)`, controles = `calcularCostoSesion(horas, controles) - tiempo` (polimórfico, en PC da 0). `CierreCaja`: todo `final`, `fecha` (`LocalDate.now()`, no se recibe), `operador` (`String`, validado con `textoValido`), 4 totales y 3 cantidades, `calcularTotal()`, `generarResumen()` y `toString()`. `GestorCaja(gestorSesiones, gestorVentas, gestorTorneos).cerrarCaja(operador)`: suma las sesiones cobradas hoy (tiempo, controles y consumos → barra), solo ventas de **CONTADO** de hoy (las de cargo a sesión ya vienen en los consumos: no contar dos veces) y las inscripciones de hoy (`getMontoPagado()`); guarda y devuelve el cierre. `listar()` copia |
+
 `tarifaControlExtra` (precio por control, en `EstacionConsola`) ≠ `controlesExtra` (cantidad, en `SesionJuego`).
 
 ## Lo que falta y quién lo hace
@@ -55,7 +57,7 @@ Proyecto de la materia **Programación Orientada a Objetos** (Universidad de La 
 Torneos (RF-08 a RF-11) ya están terminados y unidos en `main`. Lo que queda se reparte en 3 fases:
 
 **Fase 1 (en paralelo, ahora)**
-- **Marco:** RF-12 cierre de caja (`CierreCaja` en `modelos` + un gestor en `servicios`; separa tiempo, controles, barra y torneos sin contar dos veces los consumos cargados a sesión). Sus arreglos medios: nombre vacío en `Cliente`, id ≤ 0 en estaciones, mensajes ("id ya repetido" sin el id, reabastecer 0 dice "negativo"), `especifiaciones` → `especificaciones`.
+- **Marco:** ~~RF-12 cierre de caja~~ (terminado). Sus arreglos medios: nombre vacío en `Cliente`, id ≤ 0 en estaciones, mensajes ("id ya repetido" sin el id, reabastecer 0 dice "negativo"), `especifiaciones` → `especificaciones`.
 - **Compañero (rama `torneos`, primero `git merge origin/main`):**
   1. Arreglos de torneos: `Torneo.validar()` rechaza `videojuego` vacío (`ValidadorDatos.textoValido`); `final` en `gestorClientes` de `GestorTorneos`; `toString()` de `Torneo` e `Inscripcion` con el estilo del proyecto (`[TORNEO] nombre | ...`).
   2. Cobrar la inscripción con `MetodoPago` (RF-09 "registrando el cobro"): `inscribirCliente` recibe un `MetodoPago` y llama `metodo.pagar(costo)` **antes** de inscribir (si falla, no se inscribe). **No cambiar `Inscripcion.getMontoPagado()`**: lo usa el cierre de caja.

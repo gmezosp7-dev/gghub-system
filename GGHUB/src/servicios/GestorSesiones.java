@@ -68,4 +68,9 @@ public class GestorSesiones {
         sesion.finalizar(metodo);
         return sesion;
     }
+
+    // copia de todas las sesiones (abiertas y cerradas); la usa el cierre de caja (RF-12)
+    public ArrayList<SesionJuego> listar(){
+        return new ArrayList<>(sesiones);
+    }
 }
