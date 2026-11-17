@@ -3,7 +3,7 @@
 Proyecto de la materia **Programación Orientada a Objetos** (Universidad de La Sabana). Sistema en **Java 21** para el centro de e-sports **GG Hub**: 15 PCs, 10 consolas, barra de snacks y torneos. Los requerimientos (RF-01 a RF-12 y RNF-01) están en `README.md`.
 
 - Código: proyecto de IntelliJ en `GGHUB/`, fuentes en `GGHUB/src`.
-- Compilar y correr desde `GGHUB/src`: `javac -d <carpeta_salida> interfaces/*.java enums/*.java modelos/*.java servicios/*.java Main.java` y luego `java -cp <carpeta_salida> Main`.
+- Compilar y correr desde `GGHUB/src`: `javac -d <carpeta_salida> interfaces/*.java enums/*.java modelos/*.java servicios/*.java persistencia/*.java ui/*.java Main.java` y luego `java -cp <carpeta_salida> Main`.
 - La estructura sigue el repo de ejemplo del profesor: https://github.com/wilmertri/SistemaGestionBiblioteca
 
 ## Cómo trabajar con quien te use (MUY IMPORTANTE)
