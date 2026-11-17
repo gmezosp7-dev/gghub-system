@@ -7,6 +7,8 @@ public class Efectivo implements MetodoPago {
     private final double montoRecibido;
     private double montoAPagar;
     private double cambio;
+    // un pago se usa una sola vez: si se reutilizara, se borraria el comprobante del primero
+    private boolean usado;
 
     public Efectivo (double montoRecibido){
         if (!ValidadorDatos.precioValido(montoRecibido)){
@@ -20,6 +22,9 @@ public class Efectivo implements MetodoPago {
     }
     @Override
     public void pagar(double monto){
+        if (usado) {
+            throw new IllegalArgumentException("Este pago en efectivo ya fue utilizado");
+        }
         // un monto negativo daria un "cambio" mayor a lo que entrego el cliente
         if (ValidadorDatos.validadorNegativo(monto)) {
             throw new IllegalArgumentException("El monto a pagar no puede ser negativo");
@@ -30,6 +35,8 @@ public class Efectivo implements MetodoPago {
         }
         montoAPagar = monto;
         cambio = montoRecibido-monto;
+        // se marca al final: si algo fallo arriba, el pago se puede intentar de nuevo
+        usado = true;
 
 
     }

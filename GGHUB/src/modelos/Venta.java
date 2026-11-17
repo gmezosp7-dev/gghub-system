@@ -76,6 +76,10 @@ public class Venta {
 
     }
     // metodo: como paga el cliente si es CONTADO; en CARGO_SESION va null (se paga con la sesion)
+    // REGLA DEL PROYECTO: no llamar directo; se confirma con GestorVentas.confirmar(...), que ademas
+    // guarda la venta en su lista. Si se llama directo, el dinero no queda registrado y no sale en el
+    // cierre de caja (RF-12). Java no deja esconder este metodo porque Venta y GestorVentas estan en
+    // paquetes distintos, por eso es una regla (igual que cambiarEstado solo desde los gestores).
     public void confirmar(MetodoPago metodo){
         if(confirmada){
             throw new IllegalArgumentException("La venta ya fue confirmada");

@@ -63,11 +63,9 @@ public class GestorSesiones {
         if (sesion == null){
             throw new IllegalArgumentException("No hay una sesion activa en el puesto " + id);
         }
-        // la sesion calcula su tiempo, le pide al puesto su costo y cobra (polimorfismo).
-        // Si el pago falla, lanza aqui y la estacion NO se libera.
+        // la sesion calcula su tiempo, le pide al puesto su costo, cobra (polimorfismo)
+        // y, solo si el pago sale bien, libera su estacion. Si el pago falla, lanza aqui y nada cambia.
         sesion.finalizar(metodo);
-        // RF-05: al procesar el pago, la estacion de esa sesion queda libre
-        sesion.getPuesto().cambiarEstado(EstadoPuesto.DISPONIBLE);
         return sesion;
     }
 }

@@ -9,6 +9,8 @@ public class TarjetaCredito implements MetodoPago {
     private final String ultimosDigitos;
     private final int cuotas;
     private double montoPagado;
+    // un pago se usa una sola vez: si se reutilizara, se borraria el comprobante del primero
+    private boolean usado;
 
     public TarjetaCredito(String ultimosDigitos, int cuotas) {
         // exactamente 4 digitos (como PATRON_DOCUMENTO, pero con {4})
@@ -24,11 +26,15 @@ public class TarjetaCredito implements MetodoPago {
 
     @Override
     public void pagar(double monto) {
+        if (usado) {
+            throw new IllegalArgumentException("Este pago con tarjeta ya fue utilizado");
+        }
         // 0 se acepta: una sesion de menos de un minuto sin consumos cuesta $0
         if (ValidadorDatos.validadorNegativo(monto)) {
             throw new IllegalArgumentException("El monto a pagar no puede ser negativo");
         }
         montoPagado = monto;
+        usado = true;
     }
 
     @Override

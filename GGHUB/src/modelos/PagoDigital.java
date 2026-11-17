@@ -9,6 +9,8 @@ public class PagoDigital implements MetodoPago {
     private final String plataforma;
     private final String celular;
     private double montoPagado;
+    // un pago se usa una sola vez: si se reutilizara, se borraria el comprobante del primero
+    private boolean usado;
 
     public PagoDigital(String plataforma, String celular) {
         if (!ValidadorDatos.textoValido(plataforma)) {
@@ -24,11 +26,15 @@ public class PagoDigital implements MetodoPago {
 
     @Override
     public void pagar(double monto) {
+        if (usado) {
+            throw new IllegalArgumentException("Este pago digital ya fue utilizado");
+        }
         // 0 se acepta: una sesion de menos de un minuto sin consumos cuesta $0
         if (ValidadorDatos.validadorNegativo(monto)) {
             throw new IllegalArgumentException("El monto a pagar no puede ser negativo");
         }
         montoPagado = monto;
+        usado = true;
     }
 
     @Override

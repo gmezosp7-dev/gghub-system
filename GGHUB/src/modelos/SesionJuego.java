@@ -1,5 +1,6 @@
 package modelos;
 
+import enums.EstadoPuesto;
 import interfaces.MetodoPago;
 
 import java.time.Duration;
@@ -88,6 +89,10 @@ public class SesionJuego {
         fin = ahora;
         total = totalCalculado;
         metodoPago = metodo;
+        // RF-05: al procesar el pago se libera la estacion. Lo hace la propia sesion (no el gestor)
+        // para que la estacion quede libre por CUALQUIER camino que se finalice; si no, podria quedar
+        // EN_USO para siempre sin ninguna sesion activa que la libere.
+        puesto.cambiarEstado(EstadoPuesto.DISPONIBLE);
         return total;
     }
         //agregar consumibles a cuenta de sesion final
