@@ -1,9 +1,10 @@
 package modelos;
 
+import interfaces.MetodoPago;
+import servicios.ValidadorDatos;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-
-import servicios.ValidadorDatos;
 
 //Polimorfismo: Torneo no le pide nada a modalidad, le dice lo mismo a las dos y cada una reacciona como debe
 public class Torneo {
@@ -114,9 +115,9 @@ public class Torneo {
         return false;
     }
 
-    //valida todo primero (abierto, no repetido, hay cupo) y solo al final crea, agrega y devuelve,
-    //para no dejar la lista a medias
-    public Inscripcion inscribir(Cliente cliente) {
+    //valida todo primero (abierto, no repetido, hay cupo, hay metodo de pago) despues cobra y al final inscribe,
+    //asi nunca se le cobra a alguien que no puede inscribirse y si el cobro falla no queda inscrito
+    public Inscripcion inscribir(Cliente cliente, MetodoPago metodoPago) {
         if (!inscripcionesAbiertas) {
             throw new IllegalArgumentException("Las inscripciones del torneo " + getNombre() + " estan cerradas");
         }
@@ -126,7 +127,11 @@ public class Torneo {
         if (estaLleno()) {
             throw new IllegalArgumentException("El torneo " + getNombre() + " esta lleno, el cupo maximo es de " + getCupoMaximo());
         }
-        Inscripcion nuevaInscripcion = new Inscripcion(cliente, costoInscripcion);
+        if (metodoPago == null){
+            throw new IllegalArgumentException("La inscripcion necesita un metodo de pago");
+        }
+        metodoPago.pagar(costoInscripcion);
+        Inscripcion nuevaInscripcion = new Inscripcion(cliente, costoInscripcion, metodoPago);
         inscripciones.add(nuevaInscripcion);
         return nuevaInscripcion;
     }

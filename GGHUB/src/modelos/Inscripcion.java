@@ -1,5 +1,7 @@
 package modelos;
 
+import interfaces.MetodoPago;
+
 import java.time.LocalDateTime;
 
 public class Inscripcion {
@@ -9,11 +11,14 @@ public class Inscripcion {
     //Se utiliza montoPagado en vez de costoInscripcion por si el costo del torneo cambia,
     //solo se realiza el pago del dia en el que fue inscrito, lo pagado ya no cambia
     private final double montoPagado;
+    //final: con que se pago ya es un hecho que ya ocurrio
+    private final MetodoPago metodoPago;
 
-    public Inscripcion(Cliente cliente, double montoPagado) {
+    public Inscripcion(Cliente cliente, double montoPagado, MetodoPago metodoPago) {
         this.cliente = cliente;
         this.fecha = LocalDateTime.now();
         this.montoPagado = montoPagado;
+        this.metodoPago = metodoPago;
     }
 
     public Cliente getCliente() {
@@ -28,9 +33,13 @@ public class Inscripcion {
         return montoPagado;
     }
 
+    public MetodoPago getMetodoPago() {
+        return metodoPago;
+    }
+
     @Override
     public String toString() {
         //getNombre() para no imprimir el cliente completo (documento, telefono, correo)
-        return "[INSCRIPCION] | CLIENTE: " + cliente.getNombre() + " | Fecha: " + fecha + " | Pagado: " + montoPagado;
+        return "[INSCRIPCION] | CLIENTE: " + cliente.getNombre() + " | Fecha: " + fecha + " | Pagado: " + montoPagado + " | " + metodoPago.obtenerComprobante();
     }
 }

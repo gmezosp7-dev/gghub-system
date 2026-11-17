@@ -1,5 +1,6 @@
 package servicios;
 
+import interfaces.MetodoPago;
 import modelos.Cliente;
 import modelos.Inscripcion;
 import modelos.Torneo;
@@ -50,13 +51,13 @@ public class GestorTorneos {
     }
 
     //Revisa que el Torneo y el documento del cliente existan y deja que el "Torneo" valide antes de inscribirlo
-    public Inscripcion inscribirCliente(String nombreTorneo, String documento) {
+    public Inscripcion inscribirCliente(String nombreTorneo, String documento, MetodoPago metodoPago) {
         Torneo torneo = buscarTorneoExistente(nombreTorneo);
         Cliente cliente = gestorClientes.buscarPorDocumento(documento);
         if (cliente == null) {
             throw new IllegalArgumentException("No existe un cliente con el documento: " + documento);
         }
-        return torneo.inscribir(cliente);
+        return torneo.inscribir(cliente, metodoPago);
     }
 
     //private porque solo se usa por otros metodos del gestor que buscan saber si el torneo existe
