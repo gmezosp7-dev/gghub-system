@@ -13,7 +13,10 @@ public class FileManage {
     }
 
     public File getFile() {
-        return new File("src/files/" + this.nameFile);
+        File file = new File("src/files/" + this.nameFile);
+        // si la carpeta src/files todavia no existe, se crea; si no, FileWriter lanza error al escribir
+        file.getParentFile().mkdirs();
+        return file;
     }
 
     //lee todas las lineas del archivo; devuelve null si el archivo no existe
