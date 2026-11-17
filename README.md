@@ -74,12 +74,12 @@ Para la segunda entrega nos vamos a concentrar en la lógica "cruda" del negocio
 
 | Requerimiento(s) | Descripción y Clases previstas | Temas del curso | Estado |
 | :--- | :--- | :--- | :--- |
-| **RF-01** (Gestión de Clientes) | Para manejar el registro de los usuarios y validar que no existan documentos duplicados, implementaremos la clase `Cliente` y su controlador `GestorClientes`. | Clases, objetos y encapsulamiento estricto. | Por iniciar |
-| **RF-02, RF-03, RF-04, RF-05** (Puestos, Sesiones y Cobros) | Para resolver la configuración de máquinas, inicio de sesión con controles extra y cálculo de tarifas, usaremos la clase abstracta `PuestoJuego` y sus hijas `EstacionPC` y `EstacionConsola`, conectadas a `SesionJuego` y al enum `EstadoPuesto`. | Herencia, clases abstractas, polimorfismo por sobreescritura (evitando condicionales por tipo), enums, comunicación entre objetos. | Por iniciar |
-| **RF-06, RF-07** (Inventario y Consumos) | Para sumar productos a una cuenta activa o vender de contado descontando stock, diseñaremos las clases `Producto`, `ItemConsumo` e `InventarioBarra`. | Comunicación entre objetos, colecciones (`ArrayList` para catálogo y pedidos). | Por iniciar |
-| **RF-08, RF-09, RF-10, RF-11** (Gestión de Torneos) | Para organizar competencias, registrar participantes y definir ganadores, crearemos la clase `Torneo` vinculada a la clase abstracta `ModalidadTorneo` y sus subclases `EliminacionDirecta` y `FaseGrupos`. | Herencia, polimorfismo puro (para generar cruces y avanzar rondas sin usar *switch*), composición y colecciones. | Por iniciar |
-| **RF-12** (Cierre de Caja Diario) | Para consolidar los ingresos del día discriminando tiempo de juego, cafetería e inscripciones, diseñaremos la clase `CierreCaja` que sumarizará las sesiones cerradas. | Clases, objetos, métodos de cálculo y agregación de datos. | Por iniciar |
-| **RNF-01** (Persistencia) | Para garantizar que el estado de máquinas, inventario y torneos sobreviva al cierre, desarrollaremos `ArchivoPuestos` y `ArchivoInventario`. | Archivos planos desacoplados de la lógica (operaciones de guardado y carga). | Por iniciar |
+| **RF-01** (Gestión de Clientes) | Para manejar el registro de los usuarios y validar que no existan documentos duplicados, implementaremos la clase `Cliente` y su controlador `GestorClientes`. | Clases, objetos y encapsulamiento estricto. | Terminado |
+| **RF-02, RF-03, RF-04, RF-05** (Puestos, Sesiones y Cobros) | Para resolver la configuración de máquinas, inicio de sesión con controles extra y cálculo de tarifas, usaremos la clase abstracta `PuestoJuego` y sus hijas `EstacionPC` y `EstacionConsola`, conectadas a `SesionJuego` y al enum `EstadoPuesto`. | Herencia, clases abstractas, polimorfismo por sobreescritura (evitando condicionales por tipo), enums, comunicación entre objetos. | Terminado |
+| **RF-06, RF-07** (Inventario y Consumos) | Para sumar productos a una cuenta activa o vender de contado descontando stock, diseñaremos las clases `Producto`, `ItemConsumo` e `InventarioBarra`. | Comunicación entre objetos, colecciones (`ArrayList` para catálogo y pedidos). | Terminado |
+| **RF-08, RF-09, RF-10, RF-11** (Gestión de Torneos) | Para organizar competencias, registrar participantes y definir ganadores, crearemos la clase `Torneo` vinculada a la clase abstracta `ModalidadTorneo` y sus subclases `EliminacionDirecta` y `FaseGrupos`. | Herencia, polimorfismo puro (para generar cruces y avanzar rondas sin usar *switch*), composición y colecciones. | Terminado |
+| **RF-12** (Cierre de Caja Diario) | Para consolidar los ingresos del día discriminando tiempo de juego, cafetería e inscripciones, diseñaremos la clase `CierreCaja` que sumarizará las sesiones cerradas. | Clases, objetos, métodos de cálculo y agregación de datos. | Terminado |
+| **RNF-01** (Persistencia) | Para garantizar que el estado de máquinas, inventario y torneos sobreviva al cierre, se implementa la interfaz genérica `IRepository<T>` y la clase `FileManage` (lectura y escritura de archivos `.txt` en `src/files/`), sobre las que se construyen los repositorios de cada entidad. | Archivos planos desacoplados de la lógica (operaciones de guardado y carga), interfaces y genéricos. | En progreso (base lista; faltan los repositorios) |
 
 ### 4. Registro de Decisiones de Diseño POO (GG Hub)
 
@@ -89,7 +89,7 @@ Decisión: Armamos la clase PuestoJuego como abstracta para que de ahí se cuelg
 
 Alternativas consideradas: Hacer una sola clase general con un atributo de texto o usando condicionales if/else y switch para diferenciar los equipos.
 
-Por qué: Las consolas cobran extra por los controles y los mandos adicionales, mientras que las computadoras se calculan por el tipo de tarjeta gráfica o hardware. Si resolviéramos eso con puros condicionales, romperíamos el Principio Abierto/Cerrado y nos llenaríamos de validaciones feas que la universidad nos va a castigar.
+Por qué: Las consolas cobran el tiempo más un recargo por cada control adicional, mientras que las computadoras cobran solo por el tiempo de uso. Si resolviéramos eso con puros condicionales, romperíamos el Principio Abierto/Cerrado y nos llenaríamos de validaciones feas que la universidad nos va a castigar.
 
 Consecuencia: Nos ahorra dolores de cabeza a futuro al permitirnos añadir nuevos equipos fácilmente sin dañar la base del programa.
 
@@ -144,3 +144,33 @@ Evaluamos las alternativas iniciales y decidimos descartar el gimnasio y el conj
    3. En la persistencia: Las seis clases de almacenamiento (ArchivoClientes, ArchivoPuestos, ArchivoProductos, ArchivoTorneos, ArchivoSesiones y ArchivoVentas) implementan de forma polimórfica las operaciones básicas de almacenamiento y lectura de datos (guardar, listar, buscar y eliminar) definidas en la interfaz RepositorioArchivo.
   
    El polimorfismo evita el uso de condicionales múltiples (if-else o switch) para determinar con qué tipo de objeto se está trabajando. Esto garantiza que el sistema sea abierto a la extensión y cerrado a la modificación, permitiendo incluir nuevos tipos de estaciones o modalidades de torneos en el futuro sin modificar la lógica existente.
+
+## ESTADO DE LA IMPLEMENTACIÓN
+
+### Cómo ejecutar
+- **IntelliJ IDEA:** abrir la carpeta `GGHUB/`, marcar `src` como *Sources Root* (si no lo hace solo) y ejecutar `Main`. Requiere Java 21.
+- **Consola**, desde `GGHUB/src`:
+  ```
+  javac -d ../out interfaces/*.java enums/*.java modelos/*.java servicios/*.java persistencia/*.java ui/*.java Main.java
+  java -cp ../out Main
+  ```
+- El `Main` recorre todos los requerimientos con casos válidos e inválidos y termina con el cierre de caja del día.
+
+### Estructura de paquetes
+| Paquete | Contenido |
+| :--- | :--- |
+| `modelos` | Entidades: `Cliente`, `PuestoJuego` (abstracta), `EstacionPC`, `EstacionConsola`, `SesionJuego`, `Producto`, `ItemConsumo`, `Venta`, `Torneo`, `Inscripcion`, `ModalidadTorneo` (abstracta), `EliminacionDirecta`, `FaseGrupos`, `Partida`, `PosicionGrupo`, `CierreCaja`, y los pagos `Efectivo`, `TarjetaCredito`, `PagoDigital` |
+| `servicios` | Gestores con las reglas de negocio: `GestorClientes`, `GestorPuestos`, `GestorSesiones`, `InventarioBarra`, `GestorVentas`, `GestorTorneos`, `GestorCaja`, y `ValidadorDatos` (métodos estáticos) |
+| `interfaces` | `CalculableCobro`, `MetodoPago`, `IRepository<T>` |
+| `enums` | `EstadoPuesto` (DISPONIBLE, EN_USO, EN_MANTENIMIENTO), `TipoVenta` (CONTADO, CARGO_SESION) |
+| `persistencia` | `FileManage` (lectura y escritura de archivos `.txt`) |
+| `ui` | `MenuTorneos` (menú de consola de torneos) |
+
+### Cambios respecto al diseño de la Entrega 2
+El código final se aparta del diagrama de la Entrega 2 en estos puntos (el UML se actualizará a partir del código):
+- **Colecciones y enums:** el profesor autorizó `ArrayList`, genéricos y `enum`. Los estados de las estaciones y los tipos de venta son **enums** (`EstadoPuesto`, `TipoVenta`), no constantes `String`; las listas son `ArrayList`, no arreglos.
+- **Gestores:** se agregaron `GestorClientes`, `GestorPuestos`, `GestorSesiones`, `GestorVentas`, `GestorTorneos` y `GestorCaja` para que cada entidad tenga quien guarde su lista y aplique sus reglas (responsabilidad única).
+- **Pagos:** se agregó la interfaz `MetodoPago` (`pagar`, `obtenerComprobante`) con `Efectivo`, `TarjetaCredito` y `PagoDigital`. La usan la venta de contado, el cierre de la sesión y la inscripción a torneos. Se cobra **antes** de cambiar cualquier dato: si el pago falla, no se descuenta stock, no se libera la estación ni se inscribe al cliente.
+- **Cargos de la sesión:** en lugar de la clase anidada `DetalleCargo`, los consumos de la barra cargados a una sesión se guardan como `ItemConsumo`, que copia el precio del momento de la venta.
+- **Persistencia:** en lugar de `RepositorioArchivo` y las seis clases `ArchivoX`, se usa la interfaz genérica `IRepository<T>` y `FileManage`, como en el proyecto de referencia del curso.
+- **Usuarios:** `UsuarioSistema`, `Operador`, `AdministradorSala` y `Arbitro` no se implementaron como clases; el cierre de caja registra el nombre del operador.
