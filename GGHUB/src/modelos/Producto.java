@@ -56,6 +56,15 @@ public class Producto {
         }
         stock = stock + adiccionStock;
     }
+    public void descontarStock(int cantidadDescontada){
+        if (!ValidadorDatos.precioValido(cantidadDescontada)) {
+            throw new IllegalArgumentException("la cantidad a descontar de stock debe de ser mayor a 0");
+        }
+        if(!hayStock(cantidadDescontada)){
+            throw new IllegalArgumentException("stock insuficiente de "+ getNombre()+ " quedan: " + getStock() );
+        }
+        stock = stock - cantidadDescontada;
+    }
     public boolean hayStock(int stockNecesitado){
        if (stock >= stockNecesitado){
            return true;

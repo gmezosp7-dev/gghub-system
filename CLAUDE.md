@@ -29,7 +29,7 @@ Proyecto de la materia **Programación Orientada a Objetos** (Universidad de La 
 - Strings se comparan con `.equals()`; `int` y enums con `==`.
 - Nada de `if` por tipo de clase (`instanceof`): usar polimorfismo (ej. `validar()` sobreescrito).
 
-## Estado actual (RF-01 a RF-06 terminados)
+## Estado actual (RF-01 a RF-07 terminados, con pagos)
 
 | RF | Clases | Notas |
 |---|---|---|
@@ -39,12 +39,14 @@ Proyecto de la materia **Programación Orientada a Objetos** (Universidad de La 
 | RF-04 Sesiones | `modelos.SesionJuego`, `servicios.GestorSesiones` | sesión con `final` cliente, puesto e inicio (`LocalDateTime.now()`), `controlesExtra` (cantidad). `iniciarSesion(documento, idPuesto, controlesExtra)` valida cliente, puesto, disponibilidad y controles; pone el puesto EN_USO |
 | RF-05 Cobro | `interfaces.CalculableCobro`, `calcularCostoSesion(horas, controles)` en `EstacionPC` / `EstacionConsola` | `PuestoJuego implements CalculableCobro` sin implementarlo (lo hacen las hijas). `SesionJuego.finalizar()` guarda `fin`, minutos con `Duration` / 60.0, `total` = puesto.calcularCostoSesion (polimorfismo); rechaza finalizar dos veces; `estaActiva()`. `GestorSesiones.buscarSesionActiva(idPuesto)` y `finalizarSesion(idPuesto)` → puesto DISPONIBLE. Consumos de barra se sumarán en RF-07 |
 | RF-06 Productos | `modelos.Producto`, `servicios.InventarioBarra` | `codigo` `final` (String); `validar()` exige código y precio, costo y stock no negativos; `setPrecioVenta()` valida; `agregarStock()` (> 0, suma); `hayStock(cant)`. Inventario: `registrarProducto`, `buscarProducto(codigo)`, `actualizarPrecio(codigo, precio)`, `reabastecer(codigo, cant)`, `listar()` copia, `cantidad()`. Categoría es `String` (no enum) porque el admin define nuevas |
+| RF-07 Ventas | `enums.TipoVenta` {CONTADO, CARGO_SESION}, `modelos.ItemConsumo`, `modelos.Venta`, `servicios.GestorVentas` | `ItemConsumo` copia el precio del momento. `Producto.descontarStock()`. `Venta.confirmar(metodo)` es atómica: valida todo, cobra (si es contado) y solo después descuenta stock y carga consumos a la sesión. `SesionJuego` tiene `consumos`, `agregarConsumo` (solo activa) y `totalConsumos`; su total = puesto + consumos. `GestorVentas`: `nuevaVentaContado()`, `nuevaVentaCargoSesion(id)`, `agregarProducto(venta, codigo, cant)`, `confirmar(venta, metodo)` (contado) y `confirmar(venta)` (cargo, sobrecarga) |
+| Pagos | `interfaces.MetodoPago` { `void pagar(monto)`, `String obtenerComprobante()` }, `modelos.Efectivo` (recibido, cambio), `TarjetaCredito` (4 dígitos, 1-36 cuotas), `PagoDigital` (plataforma, celular de 10 dígitos) | `pagar` lanza excepción si falla (no `boolean`). Se usa en la venta de contado y en `SesionJuego.finalizar(metodo)` / `GestorSesiones.finalizarSesion(id, metodo)`: se cobra antes de cerrar; si el pago falla, la sesión sigue abierta y la estación no se libera |
 
 `tarifaControlExtra` (precio por control, en `EstacionConsola`) ≠ `controlesExtra` (cantidad, en `SesionJuego`).
 
 ## Lo que falta y quién lo hace
 
-- **Marco (dueño del repo, integración):** RF-07 ventas de barra (usa `MetodoPago`), RF-12 cierre de caja, RNF-01 persistencia en `.txt`.
+- **Marco (dueño del repo, integración):** RF-12 cierre de caja, RNF-01 persistencia en `.txt` (repositorios de sus clases; varias necesitan un segundo constructor para cargar desde archivo: `SesionJuego`, `PuestoJuego`, `Venta`, `ItemConsumo`).
 - **Compañero:** **torneos, RF-08 a RF-11** — `Torneo`, `Inscripcion`, `ModalidadTorneo` (abstracta) con `EliminacionDirecta` y `FaseGrupos`, `Partida`, y un `GestorTorneos`. Solo depende de `Cliente`/`GestorClientes` (no modificarlos sin avisar a Marco).
 
 ## Flujo de Git para trabajar en paralelo
@@ -60,6 +62,7 @@ El UML original (HTML de la Entrega 2) tiene vacíos e inconsistencias. **No se 
 - Se agregaron `GestorClientes`, `GestorPuestos`, `GestorSesiones` y el enum `EstadoPuesto` (reemplaza las constantes `String` de estado en `PuestoJuego`).
 - `PuestoJuego` usa atributos `private` y `validar()`; implementa `CalculableCobro` pero deja `calcularCostoSesion(horas, controles)` a las hijas.
 - `SesionJuego` tiene `cliente` y `puesto` (el UML no los tenía), `fin`, `total`, `finalizar()` y `estaActiva()`; no tiene `iniciar()` (el inicio lo hace el constructor y `GestorSesiones`). `consumos` y `cargos` llegan en RF-07.
-- Se agregó el grupo **Pagos**: interfaz `MetodoPago` (`pagar(monto)`, `obtenerComprobante()`) con `Efectivo`, `TarjetaCredito`, `PagoDigital`; la usará `Venta`. Aún no implementado.
+- Grupo **Pagos** implementado: `MetodoPago` con `pagar(monto)` **void** que lanza excepción (el UML decía `boolean`), `Efectivo`, `TarjetaCredito`, `PagoDigital`. Lo usan `Venta` (contado) y `SesionJuego` (al finalizar).
+- `TipoVenta` es enum (el UML tenía constantes `String` `CONTADO`/`CARGO_SESION` en `Venta`). `Venta` e `InventarioBarra` usan `ArrayList`, no arreglos. `Producto` tiene `descontarStock`/`agregarStock` en vez de `actualizarStock`. `ItemConsumo` guarda `precioUnitario`.
 - Pendientes menores: renombrar `especifiaciones` → `especificaciones` en `EstacionPC`; que el mensaje "id ya repetido" de `GestorPuestos` diga cuál id.
 - Si el compañero se aparta del UML en torneos, anotarlo aquí.

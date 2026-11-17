@@ -1,7 +1,10 @@
 package modelos;
 
+import interfaces.MetodoPago;
+
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class SesionJuego {
     // final: cliente, puesto e inicio registran un hecho que ya ocurrio
@@ -14,6 +17,9 @@ public class SesionJuego {
     private int controlesExtra;
     private LocalDateTime fin;
     private double total;
+    private ArrayList<ItemConsumo> consumos = new ArrayList<>();
+    // como se pago la cuenta; null mientras la sesion siga abierta
+    private MetodoPago metodoPago;
 
     public SesionJuego (Cliente cliente, PuestoJuego puesto,  int controlesExtra){
         this.inicio = LocalDateTime.now();
@@ -45,28 +51,61 @@ public class SesionJuego {
         return total;
     }
 
+    public MetodoPago getMetodoPago() {
+        return metodoPago;
+    }
+
     @Override
     public String toString(){
         return "[SESION]"+ " | CLIENTE: "+cliente.getNombre() + " | Puesto: " + getPuesto().getId() + " | Inicio: " + getInicio() + " | ControlesXtra: " + getControlesExtra();
 
 
     }
+    //sesion de juego aun activa?
     public boolean estaActiva(){
         return fin == null;
     }
+    //finalizacion de sesion
 
-    public double finalizar(){
+    // RF-05: "al procesar el pago libera la estacion".
+    // Primero se calcula y se cobra; solo si el pago sale bien se cierra la sesion.
+    // Si el pago falla, la sesion sigue abierta: el cliente no se va sin pagar.
+    public double finalizar(MetodoPago metodo){
         if(fin != null){
             throw new IllegalArgumentException("la sesión ya fue finalizada");
         }
-        fin = LocalDateTime.now();
-        long minutos = Duration.between(inicio, fin).toMinutes();
+        if(metodo == null){
+            throw new IllegalArgumentException("Para finalizar la sesion se necesita un metodo de pago");
+        }
+        // se calcula con variables locales: todavia no se cambia nada de la sesion
+        LocalDateTime ahora = LocalDateTime.now();
+        long minutos = Duration.between(inicio, ahora).toMinutes();
         double horas = minutos / 60.0;
-        total = puesto.calcularCostoSesion(horas,controlesExtra);
+        double totalCalculado = puesto.calcularCostoSesion(horas,controlesExtra) + totalConsumos();
+        // se cobra (polimorfismo: Efectivo, Tarjeta o PagoDigital). Si falla, lanza y nada cambio
+        metodo.pagar(totalCalculado);
+        // el pago salio bien: ahora si se cierra la sesion
+        fin = ahora;
+        total = totalCalculado;
+        metodoPago = metodo;
         return total;
-
-
+    }
+        //agregar consumibles a cuenta de sesion final
+    //solo si la sesion sigue activa
+    public void agregarConsumo(ItemConsumo itemConsumo){
+        if (!estaActiva()){
+            throw new IllegalArgumentException(("no se pueden cargar consumos a una sesión finalizada"));
+        }
+        consumos.add((itemConsumo));
+    }
+    //pago total de consumos al final de la sesion
+    public double totalConsumos(){
+        double suma = 0.0;
+        for(ItemConsumo e : consumos){
+            suma = e.subtotal() + suma;
 
         }
+        return suma;
+    }
 
 }

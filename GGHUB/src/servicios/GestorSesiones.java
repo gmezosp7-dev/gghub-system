@@ -3,6 +3,7 @@ package servicios;
 import modelos.Cliente;
 import modelos.SesionJuego;
 import enums.EstadoPuesto;
+import interfaces.MetodoPago;
 import modelos.PuestoJuego;
 import java.util.ArrayList;
 
@@ -56,15 +57,16 @@ public class GestorSesiones {
         // no hay ninguna sesion abierta en esa estacion
         return null;
     }
-    public SesionJuego finalizarSesion(int id){
+    public SesionJuego finalizarSesion(int id, MetodoPago metodo){
         // se busca UNA sola vez y se guarda en una variable local
         SesionJuego sesion = buscarSesionActiva(id);
         if (sesion == null){
             throw new IllegalArgumentException("No hay una sesion activa en el puesto " + id);
         }
-        // la sesion calcula su tiempo y le pide al puesto su costo (polimorfismo)
-        sesion.finalizar();
-        // RF-05: al cobrar, la estacion de esa sesion queda libre
+        // la sesion calcula su tiempo, le pide al puesto su costo y cobra (polimorfismo).
+        // Si el pago falla, lanza aqui y la estacion NO se libera.
+        sesion.finalizar(metodo);
+        // RF-05: al procesar el pago, la estacion de esa sesion queda libre
         sesion.getPuesto().cambiarEstado(EstadoPuesto.DISPONIBLE);
         return sesion;
     }
