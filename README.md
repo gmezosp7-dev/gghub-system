@@ -79,7 +79,7 @@ Para la segunda entrega nos vamos a concentrar en la lógica "cruda" del negocio
 | **RF-06, RF-07** (Inventario y Consumos) | Para sumar productos a una cuenta activa o vender de contado descontando stock, diseñaremos las clases `Producto`, `ItemConsumo` e `InventarioBarra`. | Comunicación entre objetos, colecciones (`ArrayList` para catálogo y pedidos). | Terminado |
 | **RF-08, RF-09, RF-10, RF-11** (Gestión de Torneos) | Para organizar competencias, registrar participantes y definir ganadores, crearemos la clase `Torneo` vinculada a la clase abstracta `ModalidadTorneo` y sus subclases `EliminacionDirecta` y `FaseGrupos`. | Herencia, polimorfismo puro (para generar cruces y avanzar rondas sin usar *switch*), composición y colecciones. | Terminado |
 | **RF-12** (Cierre de Caja Diario) | Para consolidar los ingresos del día discriminando tiempo de juego, cafetería e inscripciones, diseñaremos la clase `CierreCaja` que sumarizará las sesiones cerradas. | Clases, objetos, métodos de cálculo y agregación de datos. | Terminado |
-| **RNF-01** (Persistencia) | Para garantizar que el estado de máquinas, inventario y torneos sobreviva al cierre, se implementa la interfaz genérica `IRepository<T>` y la clase `FileManage` (lectura y escritura de archivos `.txt` en `src/files/`), sobre las que se construyen los repositorios de cada entidad. | Archivos planos desacoplados de la lógica (operaciones de guardado y carga), interfaces y genéricos. | En progreso (base lista; faltan los repositorios) |
+| **RNF-01** (Persistencia) | Para garantizar que el estado de máquinas, inventario y torneos sobreviva al cierre, se implementa la interfaz genérica `IRepository<T>`, la clase `FileManage` (lectura y escritura de archivos `.txt` en `src/files/`) y un repositorio por entidad (`ClienteRepository`, `PuestoRepository`, `ProductoRepository`, `SesionRepository`, `VentaRepository`, `TorneoRepository`). | Archivos planos desacoplados de la lógica (operaciones de guardado y carga), interfaces y genéricos. | Terminado |
 
 ### 4. Registro de Decisiones de Diseño POO (GG Hub)
 
@@ -147,14 +147,40 @@ Evaluamos las alternativas iniciales y decidimos descartar el gimnasio y el conj
 
 ## ESTADO DE LA IMPLEMENTACIÓN
 
+Los 12 requerimientos funcionales y el RNF-01 están implementados. El diagrama de clases actualizado, sacado del código final, está en **[docs/UML.md](docs/UML.md)**.
+
 ### Cómo ejecutar
-- **IntelliJ IDEA:** abrir la carpeta `GGHUB/`, marcar `src` como *Sources Root* (si no lo hace solo) y ejecutar `Main`. Requiere Java 21.
-- **Consola**, desde `GGHUB/src`:
+Requiere **Java 21**.
+- **IntelliJ IDEA:** abrir la carpeta `GGHUB/` como proyecto, marcar `src` como *Sources Root* (si no lo hace solo) y ejecutar `Main`.
+- **Consola**, desde la carpeta `GGHUB/`:
   ```
-  javac -d ../out interfaces/*.java enums/*.java modelos/*.java servicios/*.java persistencia/*.java ui/*.java Main.java
-  java -cp ../out Main
+  javac -d out src/Main.java src/enums/*.java src/interfaces/*.java src/modelos/*.java src/servicios/*.java src/persistencia/*.java src/repositorios/*.java src/ui/*.java
+  java -cp out Main
   ```
-- El `Main` recorre todos los requerimientos con casos válidos e inválidos y termina con el cierre de caja del día.
+  Hay que ejecutarlo **desde `GGHUB/`**: los datos se guardan en `src/files/`, una ruta relativa a la carpeta desde donde se corre el programa.
+
+### Cómo se usa
+`Main` abre el **menú principal** de consola:
+
+| Opción | Menú | Requerimientos |
+| :--- | :--- | :--- |
+| 1 | Clientes: registrar, buscar por documento, listar | RF-01 |
+| 2 | Estaciones: registrar PC o consola, ver el estado de las 25, buscar, poner y quitar mantenimiento | RF-02, RF-03 |
+| 3 | Sesiones: iniciar (con controles extra), ver la sesión activa de una estación, finalizar y cobrar | RF-04, RF-05 |
+| 4 | Barra: registrar productos, actualizar precio, reabastecer, venta de contado, venta cargada a una sesión | RF-06, RF-07 |
+| 5 | Torneos: crear, inscribir (con pago), cerrar inscripciones, generar cruces, registrar resultados, ver posiciones | RF-08 a RF-11 |
+| 6 | Cierre de caja del día | RF-12 |
+| 7 | Demo: ejecuta todas las pruebas automáticas (casos válidos e inválidos de cada requerimiento) sin tocar los datos guardados | Todos |
+
+Cada pago (sesión, venta de contado, inscripción) se hace con **efectivo** (calcula el cambio), **tarjeta de crédito** (últimos 4 dígitos y cuotas) o **pago digital** (Nequi, Daviplata...).
+
+### Persistencia (RNF-01)
+- Al arrancar, `MenuPrincipal` **carga** los archivos de `src/files/` y llena los gestores. La primera vez, si no hay estaciones guardadas, crea la sala: PCs del 1 al 15 y consolas del 16 al 25.
+- Cada vez que se vuelve de un submenú, **guarda** todo, así no se pierde nada si se cierra el programa.
+- Un archivo por entidad, con los campos separados por `|`: `clientes.txt`, `puestos.txt`, `productos.txt`, `sesiones.txt` (con sus consumos), `ventas.txt` (con sus productos), `torneos.txt`, `inscripciones.txt` y `partidas.txt`.
+- Los objetos que contienen a otros se guardan por su identificador (el documento del cliente, el id de la estación, el código del producto) y al cargar se buscan en el gestor correspondiente.
+- Las clases que al crearse ponen valores "de ahora" (la hora de inicio de la sesión, el estado `DISPONIBLE` de una estación, el precio actual del producto...) tienen un **segundo constructor** para recuperar los valores guardados (sobrecarga).
+- Los **cierres de caja** se calculan y se muestran, pero no se guardan en archivo.
 
 ### Estructura de paquetes
 | Paquete | Contenido |
@@ -164,13 +190,31 @@ Evaluamos las alternativas iniciales y decidimos descartar el gimnasio y el conj
 | `interfaces` | `CalculableCobro`, `MetodoPago`, `IRepository<T>` |
 | `enums` | `EstadoPuesto` (DISPONIBLE, EN_USO, EN_MANTENIMIENTO), `TipoVenta` (CONTADO, CARGO_SESION) |
 | `persistencia` | `FileManage` (lectura y escritura de archivos `.txt`) |
-| `ui` | `MenuTorneos` (menú de consola de torneos) |
+| `repositorios` | `ClienteRepository`, `PuestoRepository`, `ProductoRepository`, `SesionRepository`, `VentaRepository`, `TorneoRepository` (este último también guarda inscripciones y partidas) |
+| `ui` | `MenuPrincipal`, `MenuClientes`, `MenuPuestos`, `MenuSesiones`, `MenuBarra`, `MenuTorneos`, `MenuCaja` y `Demo` |
+
+### Conceptos de POO en el código
+| Concepto | Dónde |
+| :--- | :--- |
+| Clases abstractas y herencia | `PuestoJuego` → `EstacionPC`, `EstacionConsola`; `ModalidadTorneo` → `EliminacionDirecta`, `FaseGrupos` |
+| Interfaces | `CalculableCobro` (la implementa `PuestoJuego`), `MetodoPago` (`Efectivo`, `TarjetaCredito`, `PagoDigital`), `IRepository<T>` (los 6 repositorios) |
+| Polimorfismo | `calcularCostoSesion()` cobra distinto en PC y consola; `validar()` y `aLinea()` se sobreescriben por tipo de estación; `generarCruces()`, `procesarResultado()` y `obtenerPosiciones()` cambian por modalidad; `pagar()` cambia por método de pago; `toString()` en todas las entidades |
+| Encapsulamiento | atributos `private`; identificadores y hechos ya ocurridos con `final` y sin setter; `listar()` devuelve copias; el estado solo cambia por métodos con reglas (`cambiarEstado`, `cerrarInscripciones`, `descontarStock`...) |
+| Miembros estáticos | `ValidadorDatos` (`PATRON_DOCUMENTO`, `documentoValido`, `precioValido`, `textoValido`, `validadorNegativo`); `PosicionGrupo.PUNTOS_POR_VICTORIA` |
+| Enums | `EstadoPuesto`, `TipoVenta` |
+| Sobrecarga | `GestorVentas.confirmar(venta)` y `confirmar(venta, metodo)`; segundos constructores para cargar desde archivo |
+| Composición y asociación | `SesionJuego` tiene un `Cliente`, un `PuestoJuego` y sus consumos; `Venta` tiene sus `ItemConsumo`; `Torneo` tiene sus inscripciones y partidas; los gestores reciben otros gestores por constructor |
+| Colecciones y genéricos | `ArrayList<T>` en todos los gestores; `IRepository<T>` |
+| Excepciones | las reglas de negocio lanzan `IllegalArgumentException` con un mensaje claro, y los menús las atrapan |
 
 ### Cambios respecto al diseño de la Entrega 2
-El código final se aparta del diagrama de la Entrega 2 en estos puntos (el UML se actualizará a partir del código):
+El código final se aparta del diagrama de la Entrega 2 en estos puntos (el diagrama actualizado está en [docs/UML.md](docs/UML.md)):
 - **Colecciones y enums:** el profesor autorizó `ArrayList`, genéricos y `enum`. Los estados de las estaciones y los tipos de venta son **enums** (`EstadoPuesto`, `TipoVenta`), no constantes `String`; las listas son `ArrayList`, no arreglos.
 - **Gestores:** se agregaron `GestorClientes`, `GestorPuestos`, `GestorSesiones`, `GestorVentas`, `GestorTorneos` y `GestorCaja` para que cada entidad tenga quien guarde su lista y aplique sus reglas (responsabilidad única).
 - **Pagos:** se agregó la interfaz `MetodoPago` (`pagar`, `obtenerComprobante`) con `Efectivo`, `TarjetaCredito` y `PagoDigital`. La usan la venta de contado, el cierre de la sesión y la inscripción a torneos. Se cobra **antes** de cambiar cualquier dato: si el pago falla, no se descuenta stock, no se libera la estación ni se inscribe al cliente.
 - **Cargos de la sesión:** en lugar de la clase anidada `DetalleCargo`, los consumos de la barra cargados a una sesión se guardan como `ItemConsumo`, que copia el precio del momento de la venta.
-- **Persistencia:** en lugar de `RepositorioArchivo` y las seis clases `ArchivoX`, se usa la interfaz genérica `IRepository<T>` y `FileManage`, como en el proyecto de referencia del curso.
-- **Usuarios:** `UsuarioSistema`, `Operador`, `AdministradorSala` y `Arbitro` no se implementaron como clases; el cierre de caja registra el nombre del operador.
+- **Persistencia:** en lugar de `RepositorioArchivo` y las seis clases `ArchivoX`, se usa la interfaz genérica `IRepository<T>`, `FileManage` y un repositorio por entidad (`XRepository`), como en el proyecto de referencia del curso.
+- **Usuarios:** `UsuarioSistema`, `Operador`, `AdministradorSala` y `Arbitro` no se implementaron como clases; el cierre de caja registra el nombre del operador como texto.
+- **Torneos:** el torneo se identifica por su nombre; `Partida` guarda a los dos jugadores (si el número de inscritos es impar, uno pasa directo); la fase de grupos es un solo grupo de todos contra todos, con 3 puntos por victoria y sin empates; la tabla de posiciones usa `PosicionGrupo` en lugar de los arreglos `participantes[]` y `puntos[]`.
+- **Cierre de caja:** separa el dinero en tiempo de juego, controles extra, barra (ventas de contado más consumos cargados a sesiones, sin contarlos dos veces) e inscripciones a torneos.
+- **Menús:** se agregó la capa `ui` con un menú de consola por área y una `Demo` con las pruebas.

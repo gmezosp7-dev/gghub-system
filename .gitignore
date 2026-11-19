@@ -31,3 +31,6 @@ out/
 # Carpeta de proyecto de IntelliJ IDEA
 .idea/
 *.iml
+
+# Contexto local de Claude Code (no se sube)
+CLAUDE.md
