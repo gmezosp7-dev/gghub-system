@@ -218,3 +218,11 @@ El código final se aparta del diagrama de la Entrega 2 en estos puntos (el diag
 - **Torneos:** el torneo se identifica por su nombre; `Partida` guarda a los dos jugadores (si el número de inscritos es impar, uno pasa directo); la fase de grupos es un solo grupo de todos contra todos, con 3 puntos por victoria y sin empates; la tabla de posiciones usa `PosicionGrupo` en lugar de los arreglos `participantes[]` y `puntos[]`.
 - **Cierre de caja:** separa el dinero en tiempo de juego, controles extra, barra (ventas de contado más consumos cargados a sesiones, sin contarlos dos veces) e inscripciones a torneos.
 - **Menús:** se agregó la capa `ui` con un menú de consola por área y una `Demo` con las pruebas.
+
+### Bitácora de uso de IA (implementación)
+
+**B (Bitácora):**
+Durante la implementación usamos Claude Code (Anthropic) como tutor y revisor. Para cada requerimiento le pedimos que describiera en español qué debía hacer cada clase y método (qué recibe, qué devuelve y sus pasos), y nosotros lo transcribimos a Java. Después le pedimos que leyera el código, lo compilara y lo probara con casos válidos e inválidos en una carpeta aparte, y que explicara cada error según los pilares de POO. También lo usamos para unir las ramas del equipo, generar el diagrama de clases final (`docs/UML.md`) a partir del código real, actualizar este README, preparar la presentación y el guion de la sustentación, y probar la carga de archivos `.txt` con datos mal escritos.
+
+**C (Crítica):**
+No aceptamos todo lo que propuso: no implementamos la clase anidada que sugirió para `PosicionGrupo`. Varias de sus primeras respuestas generaban clases completas; le pedimos trabajar paso a paso para entender cada decisión antes de escribirla. Todo lo que produjo lo verificamos compilando y ejecutando el programa, y cuando el UML original no coincidía con el código dejamos que mandara el código.
